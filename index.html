@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>LeadForge - Full Test System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --bg: #0f172a;
+    --card: #111827;
+    --text: #ffffff;
+    --primary: #2563eb;
+}
+
+body.light {
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --text: #000000;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    position: fixed;
+    background: #1e293b;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    color: white;
+}
+
+.sidebar button {
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px;
+    background: var(--primary);
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+.card {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+input, select {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 6px;
+    border: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #374151;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>LeadForge</h2>
+
+<button onclick="mostrar('dashboard')">Dashboard</button>
+<button onclick="mostrar('leads')">Leads</button>
+
+<hr>
+
+<select onchange="mudarIdioma(this.value)">
+<option value="pt">Português</option>
+<option value="es">Español</option>
+<option value="en">English</option>
+</select>
+
+<button onclick="toggleTema()">Modo Claro / Escuro</button>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+<h1 id="titulo">Dashboard</h1>
+</div>
+
+<div id="dashboard" class="card">
+
+<h2>Resumo</h2>
+
+<p>Total de Leads: <span id="totalLeads">0</span></p>
+
+</div>
+
+<div id="leads" class="card" style="display:none">
+
+<h2>Cadastrar Lead</h2>
+
+<input id="nome" placeholder="Nome">
+<input id="empresa" placeholder="Empresa">
+<input id="telefone" placeholder="Telefone">
+
+<select id="status">
+<option>Novo</option>
+<option>Contato feito</option>
+<option>Follow-up</option>
+<option>Interessado</option>
+<option>Cliente</option>
+<option>Perdido</option>
+</select>
+
+<button onclick="adicionarLead()">Salvar</button>
+
+<hr>
+
+<h2>Lista</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Nome</th>
+<th>Empresa</th>
+<th>Status</th>
+<th>Ação</th>
+</tr>
+</thead>
+
+<tbody id="lista"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let idioma = "pt";
+
+let textos = {
+pt: {
+dashboard: "Dashboard",
+leads: "Leads"
+},
+es: {
+dashboard: "Panel",
+leads: "Contactos"
+},
+en: {
+dashboard: "Dashboard",
+leads: "Leads"
+}
+};
+
+function mudarIdioma(lang) {
+idioma = lang;
+document.getElementById("titulo").innerText = textos[lang].dashboard;
+}
+
+function toggleTema() {
+document.body.classList.toggle("light");
+}
+
+function mostrar(secao) {
+
+document.getElementById("dashboard").style.display = "none";
+document.getElementById("leads").style.display = "none";
+
+document.getElementById(secao).style.display = "block";
+
+}
+
+let leads = JSON.parse(localStorage.getItem("leads")) || [];
+
+function salvar() {
+localStorage.setItem("leads", JSON.stringify(leads));
+}
+
+function adicionarLead() {
+
+let nome = document.getElementById("nome").value;
+let empresa = document.getElementById("empresa").value;
+let telefone = document.getElementById("telefone").value;
+let status = document.getElementById("status").value;
+
+if(nome === "") return;
+
+leads.push({
+nome,
+empresa,
+telefone,
+status
+});
+
+salvar();
+atualizar();
+
+}
+
+function excluir(index) {
+
+leads.splice(index,1);
+salvar();
+atualizar();
+
+}
+
+function atualizar() {
+
+let tabela = document.getElementById("lista");
+
+tabela.innerHTML = "";
+
+leads.forEach((lead,index)=>{
+
+tabela.innerHTML += `
+<tr>
+<td>${lead.nome}</td>
+<td>${lead.empresa}</td>
+<td>${lead.status}</td>
+<td>
+<button onclick="excluir(${index})">
+Excluir
+</button>
+</td>
+</tr>
+`;
+
+});
+
+document.getElementById("totalLeads").innerText = leads.length;
+
+}
+
+atualizar();
+
+</script>
+
+</body>
+</html>
