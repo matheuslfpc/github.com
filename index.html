@@ -1,270 +1,2614 @@
-
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>LeadForge - Full Test System</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadForge - Lead Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-sidebar: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #0891b2;
+            --accent-hover: #0e7490;
+            --accent-light: rgba(8, 145, 178, 0.1);
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
 
-<style>
-:root {
-    --bg: #0f172a;
-    --card: #111827;
-    --text: #ffffff;
-    --primary: #2563eb;
-}
+        .dark {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-sidebar: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent: #06b6d4;
+            --accent-hover: #22d3ee;
+            --accent-light: rgba(6, 182, 212, 0.15);
+            --border: #334155;
+            --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.2);
+        }
 
-body.light {
-    --bg: #f4f6f9;
-    --card: #ffffff;
-    --text: #000000;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
 
-.sidebar {
-    width: 220px;
-    height: 100vh;
-    position: fixed;
-    background: #1e293b;
-    padding: 20px;
-}
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+        }
 
-.sidebar h2 {
-    color: white;
-}
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--bg-sidebar);
+            z-index: 100;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
 
-.sidebar button {
-    width: 100%;
-    margin: 5px 0;
-    padding: 10px;
-    background: var(--primary);
-    border: none;
-    color: white;
-    cursor: pointer;
-}
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
 
-.main {
-    margin-left: 240px;
-    padding: 20px;
-}
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-.card {
-    background: var(--card);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #0e7490);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-input, select {
-    padding: 8px;
-    margin: 5px;
-    border-radius: 6px;
-    border: none;
-}
+        .logo-text {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
 
-th, td {
-    padding: 10px;
-    border-bottom: 1px solid #374151;
-}
+        .nav-section {
+            margin-bottom: 24px;
+        }
 
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-</style>
+        .nav-section-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .theme-toggle, .lang-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover, .lang-select:hover {
+            border-color: var(--accent);
+        }
+
+        .lang-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 32px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .stat-icon.orange {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* Grid */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: var(--accent-light);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .status-contacted {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+        }
+
+        .status-followup {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .status-interested {
+            background: rgba(6, 182, 212, 0.15);
+            color: #06b6d4;
+        }
+
+        .status-client {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .status-lost {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-icon {
+            padding: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Search & Filter */
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .search-input svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .alert-info {
+            background: rgba(6, 182, 212, 0.15);
+            color: #06b6d4;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            padding: 16px 20px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastIn 0.3s ease;
+            min-width: 300px;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* Message Generator */
+        .message-preview {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 150px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .grid-4, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 12px 16px;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Mobile Overlay */
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+        }
+    </style>
 </head>
-
 <body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
-<div class="sidebar">
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
 
-<h2>LeadForge</h2>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">LeadForge</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title" data-i18n="menu.main">Main</div>
+                <div class="nav-item active" data-section="dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="9"/>
+                        <rect x="14" y="3" width="7" height="5"/>
+                        <rect x="14" y="12" width="7" height="9"/>
+                        <rect x="3" y="16" width="7" height="5"/>
+                    </svg>
+                    <span data-i18n="menu.dashboard">Dashboard</span>
+                </div>
+                <div class="nav-item" data-section="leads">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span data-i18n="menu.leads">Leads</span>
+                </div>
+                <div class="nav-item" data-section="clients">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <polyline points="16 11 18 13 22 9"/>
+                    </svg>
+                    <span data-i18n="menu.clients">Clients</span>
+                </div>
+                <div class="nav-item" data-section="lost">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    <span data-i18n="menu.lostLeads">Lost Leads</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title" data-i18n="menu.tools">Tools</div>
+                <div class="nav-item" data-section="messages">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span data-i18n="menu.messageGenerator">Message Generator</span>
+                </div>
+                <div class="nav-item" data-section="templates">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/>
+                        <line x1="9" y1="21" x2="9" y2="9"/>
+                    </svg>
+                    <span data-i18n="menu.templates">Templates</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title" data-i18n="menu.settings">Settings</div>
+                <div class="nav-item" data-section="settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span data-i18n="menu.settings">Settings</span>
+                </div>
+            </div>
+        </nav>
+    </aside>
 
-<button onclick="mostrar('dashboard')">Dashboard</button>
-<button onclick="mostrar('leads')">Leads</button>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <h1 class="header-title" id="pageTitle" data-i18n="menu.dashboard">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="pt">Portugues</option>
+                    <option value="es">Espanol</option>
+                </select>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <span data-i18n="settings.theme">Theme</span>
+                </button>
+            </div>
+        </header>
 
-<hr>
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="fade-in">
+                <div id="alertsContainer"></div>
+                <div class="grid-4" style="margin-bottom: 32px;">
+                    <div class="card stat-card">
+                        <div class="stat-icon blue">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="totalLeads">0</div>
+                            <div class="stat-label" data-i18n="dashboard.totalLeads">Total Leads</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon green">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <polyline points="16 11 18 13 22 9"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="totalClients">0</div>
+                            <div class="stat-label" data-i18n="dashboard.totalClients">Total Clients</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon red">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="15" y1="9" x2="9" y2="15"/>
+                                <line x1="9" y1="9" x2="15" y2="15"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="totalLost">0</div>
+                            <div class="stat-label" data-i18n="dashboard.lostLeads">Lost Leads</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon orange">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="pendingFollowups">0</div>
+                            <div class="stat-label" data-i18n="dashboard.pendingFollowups">Pending Follow-ups</div>
+                        </div>
+                    </div>
+                </div>
 
-<select onchange="mudarIdioma(this.value)">
-<option value="pt">Português</option>
-<option value="es">Español</option>
-<option value="en">English</option>
-</select>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="dashboard.recentLeads">Recent Leads</h3>
+                        <div id="recentLeadsList"></div>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="dashboard.todayReminders">Today's Reminders</h3>
+                        <div id="todayReminders"></div>
+                    </div>
+                </div>
+            </section>
 
-<button onclick="toggleTema()">Modo Claro / Escuro</button>
+            <!-- Leads Section -->
+            <section id="leadsSection" class="fade-in" style="display: none;">
+                <div class="search-bar">
+                    <div class="search-input">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" id="searchLeads" placeholder="Search leads..." oninput="filterLeads()">
+                    </div>
+                    <select class="form-select" style="width: auto; min-width: 150px;" id="filterStatus" onchange="filterLeads()">
+                        <option value="">All Status</option>
+                        <option value="new">New</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="followup">Follow-up</option>
+                        <option value="interested">Interested</option>
+                        <option value="client">Client</option>
+                        <option value="lost">Lost</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openLeadModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span data-i18n="leads.addLead">Add Lead</span>
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="leads.name">Name</th>
+                                    <th data-i18n="leads.company">Company</th>
+                                    <th data-i18n="leads.phone">Phone</th>
+                                    <th data-i18n="leads.status">Status</th>
+                                    <th data-i18n="leads.followUp">Follow-up</th>
+                                    <th data-i18n="leads.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-</div>
+            <!-- Clients Section -->
+            <section id="clientsSection" class="fade-in" style="display: none;">
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="leads.name">Name</th>
+                                    <th data-i18n="leads.company">Company</th>
+                                    <th data-i18n="leads.phone">Phone</th>
+                                    <th data-i18n="leads.email">Email</th>
+                                    <th data-i18n="leads.niche">Niche</th>
+                                    <th data-i18n="leads.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-<div class="main">
+            <!-- Lost Leads Section -->
+            <section id="lostSection" class="fade-in" style="display: none;">
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="leads.name">Name</th>
+                                    <th data-i18n="leads.company">Company</th>
+                                    <th data-i18n="leads.phone">Phone</th>
+                                    <th data-i18n="leads.notes">Notes</th>
+                                    <th data-i18n="leads.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lostTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-<div class="topbar">
-<h1 id="titulo">Dashboard</h1>
-</div>
+            <!-- Message Generator Section -->
+            <section id="messagesSection" class="fade-in" style="display: none;">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="message.selectLead">Select Lead</h3>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="message.chooseLead">Choose a lead to generate message</label>
+                            <select class="form-select" id="messageLeadSelect" onchange="selectLeadForMessage()">
+                                <option value="">-- Select Lead --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="message.messageType">Message Type</label>
+                            <select class="form-select" id="messageType" onchange="generateMessage()">
+                                <option value="first_contact">First Contact</option>
+                                <option value="followup">Follow-up</option>
+                                <option value="reengagement">Re-engagement</option>
+                                <option value="proposal">Proposal</option>
+                                <option value="birthday">Birthday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="message.customData">Custom Data (optional)</label>
+                            <input type="text" class="form-input" id="customOffer" placeholder="Special offer or promotion...">
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="generateMessage()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            <span data-i18n="message.generate">Generate Message</span>
+                        </button>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="message.preview">Message Preview</h3>
+                        <div class="message-preview" id="messagePreview"></div>
+                        <div style="margin-top: 20px; display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="copyMessage()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                <span data-i18n="message.copy">Copy</span>
+                            </button>
+                            <button class="btn btn-secondary" onclick="saveMessageAsTemplate()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                    <polyline points="17 21 17 13 7 13 7 21"/>
+                                    <polyline points="7 3 7 8 15 8"/>
+                                </svg>
+                                <span data-i18n="message.saveTemplate">Save as Template</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-<div id="dashboard" class="card">
+            <!-- Templates Section -->
+            <section id="templatesSection" class="fade-in" style="display: none;">
+                <div style="margin-bottom: 24px;">
+                    <button class="btn btn-primary" onclick="openTemplateModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span data-i18n="templates.createTemplate">Create Template</span>
+                    </button>
+                </div>
+                <div class="card">
+                    <div id="templatesList"></div>
+                </div>
+            </section>
 
-<h2>Resumo</h2>
+            <!-- Settings Section -->
+            <section id="settingsSection" class="fade-in" style="display: none;">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="settings.sellerInfo">Seller Information</h3>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.sellerName">Your Name</label>
+                            <input type="text" class="form-input" id="sellerName" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.sellerCompany">Company</label>
+                            <input type="text" class="form-input" id="sellerCompany" placeholder="Your company">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.sellerNiche">Your Niche</label>
+                            <input type="text" class="form-input" id="sellerNiche" placeholder="Your niche">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.sellerSubniche">Your Subniche</label>
+                            <input type="text" class="form-input" id="sellerSubniche" placeholder="Your subniche">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSellerInfo()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                            <span data-i18n="settings.saveInfo">Save Information</span>
+                        </button>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="settings.preferences">Preferences</h3>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.language">Language</label>
+                            <select class="form-select" id="settingsLang" onchange="changeLanguage(this.value)">
+                                <option value="en">English</option>
+                                <option value="pt">Portugues</option>
+                                <option value="es">Espanol</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.theme">Theme</label>
+                            <div style="display: flex; gap: 12px; margin-top: 8px;">
+                                <button class="btn btn-secondary" onclick="setTheme('light')" id="lightThemeBtn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="5"/>
+                                        <line x1="12" y1="1" x2="12" y2="3"/>
+                                        <line x1="12" y1="21" x2="12" y2="23"/>
+                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                        <line x1="1" y1="12" x2="3" y2="12"/>
+                                        <line x1="21" y1="12" x2="23" y2="12"/>
+                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                                    </svg>
+                                    <span data-i18n="settings.light">Light</span>
+                                </button>
+                                <button class="btn btn-secondary" onclick="setTheme('dark')" id="darkThemeBtn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                    </svg>
+                                    <span data-i18n="settings.dark">Dark</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+                            <h4 style="margin-bottom: 16px; color: var(--danger);" data-i18n="settings.dangerZone">Danger Zone</h4>
+                            <button class="btn btn-danger" onclick="clearAllData()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                                <span data-i18n="settings.clearData">Clear All Data</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
 
-<p>Total de Leads: <span id="totalLeads">0</span></p>
+    <!-- Lead Modal -->
+    <div class="modal-overlay" id="leadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="leadModalTitle">Add Lead</h3>
+                <button class="modal-close" onclick="closeLeadModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="leadForm">
+                    <input type="hidden" id="leadId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.name">Name</label>
+                            <input type="text" class="form-input" id="leadName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.company">Company</label>
+                            <input type="text" class="form-input" id="leadCompany">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.phone">Phone</label>
+                            <input type="tel" class="form-input" id="leadPhone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.email">Email</label>
+                            <input type="email" class="form-input" id="leadEmail">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.city">City</label>
+                            <input type="text" class="form-input" id="leadCity">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.status">Status</label>
+                            <select class="form-select" id="leadStatus">
+                                <option value="new">New</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="followup">Follow-up</option>
+                                <option value="interested">Interested</option>
+                                <option value="client">Client</option>
+                                <option value="lost">Lost</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.niche">Niche</label>
+                            <input type="text" class="form-input" id="leadNiche">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.subniche">Subniche</label>
+                            <input type="text" class="form-input" id="leadSubniche">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.followUpDate">Follow-up Date</label>
+                            <input type="date" class="form-input" id="leadFollowUp">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.birthday">Birthday</label>
+                            <input type="date" class="form-input" id="leadBirthday">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="leads.notes">Notes</label>
+                        <textarea class="form-textarea" id="leadNotes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeLeadModal()" data-i18n="common.cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="saveLead()" data-i18n="common.save">Save</button>
+            </div>
+        </div>
+    </div>
 
-</div>
+    <!-- Template Modal -->
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="templateModalTitle">Create Template</h3>
+                <button class="modal-close" onclick="closeTemplateModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="templateForm">
+                    <input type="hidden" id="templateId">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="templates.templateName">Template Name</label>
+                        <input type="text" class="form-input" id="templateName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="templates.messageType">Message Type</label>
+                        <select class="form-select" id="templateType">
+                            <option value="first_contact">First Contact</option>
+                            <option value="followup">Follow-up</option>
+                            <option value="reengagement">Re-engagement</option>
+                            <option value="proposal">Proposal</option>
+                            <option value="birthday">Birthday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="templates.messageContent">Message Content</label>
+                        <textarea class="form-textarea" id="templateContent" rows="6" required></textarea>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                            Use placeholders: {name}, {company}, {niche}, {seller_name}, {seller_company}
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTemplateModal()" data-i18n="common.cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="saveTemplate()" data-i18n="common.save">Save</button>
+            </div>
+        </div>
+    </div>
 
-<div id="leads" class="card" style="display:none">
+    <!-- Confirm Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmModalTitle">Confirm</h3>
+                <button class="modal-close" onclick="closeConfirmModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalText">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()" data-i18n="common.cancel">Cancel</button>
+                <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()">Delete</button>
+            </div>
+        </div>
+    </div>
 
-<h2>Cadastrar Lead</h2>
+    <script>
+        // ==================== DATA ====================
+        let leads = JSON.parse(localStorage.getItem('leadforge_leads')) || [];
+        let templates = JSON.parse(localStorage.getItem('leadforge_templates')) || [];
+        let settings = JSON.parse(localStorage.getItem('leadforge_settings')) || {
+            language: 'en',
+            theme: 'light',
+            seller: {
+                name: '',
+                company: '',
+                niche: '',
+                subniche: ''
+            }
+        };
+        let confirmCallback = null;
 
-<input id="nome" placeholder="Nome">
-<input id="empresa" placeholder="Empresa">
-<input id="telefone" placeholder="Telefone">
+        // ==================== TRANSLATIONS ====================
+        const translations = {
+            en: {
+                menu: {
+                    main: 'Main',
+                    dashboard: 'Dashboard',
+                    leads: 'Leads',
+                    clients: 'Clients',
+                    lostLeads: 'Lost Leads',
+                    tools: 'Tools',
+                    messageGenerator: 'Message Generator',
+                    templates: 'Templates',
+                    settings: 'Settings'
+                },
+                dashboard: {
+                    totalLeads: 'Total Leads',
+                    totalClients: 'Total Clients',
+                    lostLeads: 'Lost Leads',
+                    pendingFollowups: 'Pending Follow-ups',
+                    recentLeads: 'Recent Leads',
+                    todayReminders: "Today's Reminders",
+                    followUpToday: 'Follow-up due today',
+                    followUpOverdue: 'Follow-up overdue',
+                    birthdayToday: 'Birthday today',
+                    noReminders: 'No reminders for today'
+                },
+                leads: {
+                    addLead: 'Add Lead',
+                    editLead: 'Edit Lead',
+                    name: 'Name',
+                    company: 'Company',
+                    phone: 'Phone',
+                    email: 'Email',
+                    city: 'City',
+                    status: 'Status',
+                    niche: 'Niche',
+                    subniche: 'Subniche',
+                    followUp: 'Follow-up',
+                    followUpDate: 'Follow-up Date',
+                    birthday: 'Birthday',
+                    notes: 'Notes',
+                    actions: 'Actions',
+                    edit: 'Edit',
+                    delete: 'Delete',
+                    searchLeads: 'Search leads...',
+                    allStatus: 'All Status',
+                    new: 'New',
+                    contacted: 'Contacted',
+                    followup: 'Follow-up',
+                    interested: 'Interested',
+                    client: 'Client',
+                    lost: 'Lost',
+                    noLeads: 'No leads found',
+                    addFirstLead: 'Add your first lead to get started'
+                },
+                clients: {
+                    title: 'Clients',
+                    noClients: 'No clients yet',
+                    convertLeads: 'Convert leads to clients to see them here'
+                },
+                lost: {
+                    title: 'Lost Leads',
+                    noLost: 'No lost leads',
+                    markAsLost: 'Leads marked as lost will appear here'
+                },
+                message: {
+                    selectLead: 'Select Lead',
+                    chooseLead: 'Choose a lead to generate message',
+                    messageType: 'Message Type',
+                    customData: 'Custom Offer (optional)',
+                    generate: 'Generate Message',
+                    preview: 'Message Preview',
+                    copy: 'Copy',
+                    saveTemplate: 'Save as Template',
+                    copied: 'Message copied to clipboard',
+                    selectLeadFirst: 'Please select a lead first',
+                    first_contact: 'First Contact',
+                    followup: 'Follow-up',
+                    reengagement: 'Re-engagement',
+                    proposal: 'Proposal',
+                    birthday: 'Birthday'
+                },
+                templates: {
+                    createTemplate: 'Create Template',
+                    templateName: 'Template Name',
+                    messageType: 'Message Type',
+                    messageContent: 'Message Content',
+                    noTemplates: 'No templates yet',
+                    createFirst: 'Create your first message template',
+                    useTemplate: 'Use',
+                    deleteTemplate: 'Delete',
+                    templateSaved: 'Template saved successfully'
+                },
+                settings: {
+                    sellerInfo: 'Seller Information',
+                    sellerName: 'Your Name',
+                    sellerCompany: 'Company',
+                    sellerNiche: 'Your Niche',
+                    sellerSubniche: 'Your Subniche',
+                    saveInfo: 'Save Information',
+                    preferences: 'Preferences',
+                    language: 'Language',
+                    theme: 'Theme',
+                    light: 'Light',
+                    dark: 'Dark',
+                    dangerZone: 'Danger Zone',
+                    clearData: 'Clear All Data',
+                    infoSaved: 'Seller information saved',
+                    dataCleared: 'All data has been cleared'
+                },
+                common: {
+                    cancel: 'Cancel',
+                    save: 'Save',
+                    confirm: 'Confirm',
+                    delete: 'Delete',
+                    confirmDelete: 'Are you sure you want to delete this item?',
+                    success: 'Success',
+                    error: 'Error',
+                    warning: 'Warning'
+                }
+            },
+            pt: {
+                menu: {
+                    main: 'Principal',
+                    dashboard: 'Painel',
+                    leads: 'Leads',
+                    clients: 'Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    tools: 'Ferramentas',
+                    messageGenerator: 'Gerador de Mensagens',
+                    templates: 'Modelos',
+                    settings: 'Configuracoes'
+                },
+                dashboard: {
+                    totalLeads: 'Total de Leads',
+                    totalClients: 'Total de Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    pendingFollowups: 'Follow-ups Pendentes',
+                    recentLeads: 'Leads Recentes',
+                    todayReminders: 'Lembretes de Hoje',
+                    followUpToday: 'Follow-up para hoje',
+                    followUpOverdue: 'Follow-up atrasado',
+                    birthdayToday: 'Aniversario hoje',
+                    noReminders: 'Nenhum lembrete para hoje'
+                },
+                leads: {
+                    addLead: 'Adicionar Lead',
+                    editLead: 'Editar Lead',
+                    name: 'Nome',
+                    company: 'Empresa',
+                    phone: 'Telefone',
+                    email: 'Email',
+                    city: 'Cidade',
+                    status: 'Status',
+                    niche: 'Nicho',
+                    subniche: 'Subnicho',
+                    followUp: 'Follow-up',
+                    followUpDate: 'Data de Follow-up',
+                    birthday: 'Aniversario',
+                    notes: 'Notas',
+                    actions: 'Acoes',
+                    edit: 'Editar',
+                    delete: 'Excluir',
+                    searchLeads: 'Buscar leads...',
+                    allStatus: 'Todos os Status',
+                    new: 'Novo',
+                    contacted: 'Contatado',
+                    followup: 'Follow-up',
+                    interested: 'Interessado',
+                    client: 'Cliente',
+                    lost: 'Perdido',
+                    noLeads: 'Nenhum lead encontrado',
+                    addFirstLead: 'Adicione seu primeiro lead para comecar'
+                },
+                clients: {
+                    title: 'Clientes',
+                    noClients: 'Nenhum cliente ainda',
+                    convertLeads: 'Converta leads em clientes para ve-los aqui'
+                },
+                lost: {
+                    title: 'Leads Perdidos',
+                    noLost: 'Nenhum lead perdido',
+                    markAsLost: 'Leads marcados como perdidos aparecerão aqui'
+                },
+                message: {
+                    selectLead: 'Selecionar Lead',
+                    chooseLead: 'Escolha um lead para gerar mensagem',
+                    messageType: 'Tipo de Mensagem',
+                    customData: 'Oferta Personalizada (opcional)',
+                    generate: 'Gerar Mensagem',
+                    preview: 'Previsualizacao',
+                    copy: 'Copiar',
+                    saveTemplate: 'Salvar como Modelo',
+                    copied: 'Mensagem copiada para area de transferencia',
+                    selectLeadFirst: 'Por favor, selecione um lead primeiro',
+                    first_contact: 'Primeiro Contato',
+                    followup: 'Follow-up',
+                    reengagement: 'Reengajamento',
+                    proposal: 'Proposta',
+                    birthday: 'Aniversario'
+                },
+                templates: {
+                    createTemplate: 'Criar Modelo',
+                    templateName: 'Nome do Modelo',
+                    messageType: 'Tipo de Mensagem',
+                    messageContent: 'Conteudo da Mensagem',
+                    noTemplates: 'Nenhum modelo ainda',
+                    createFirst: 'Crie seu primeiro modelo de mensagem',
+                    useTemplate: 'Usar',
+                    deleteTemplate: 'Excluir',
+                    templateSaved: 'Modelo salvo com sucesso'
+                },
+                settings: {
+                    sellerInfo: 'Informacoes do Vendedor',
+                    sellerName: 'Seu Nome',
+                    sellerCompany: 'Empresa',
+                    sellerNiche: 'Seu Nicho',
+                    sellerSubniche: 'Seu Subnicho',
+                    saveInfo: 'Salvar Informacoes',
+                    preferences: 'Preferencias',
+                    language: 'Idioma',
+                    theme: 'Tema',
+                    light: 'Claro',
+                    dark: 'Escuro',
+                    dangerZone: 'Zona de Perigo',
+                    clearData: 'Limpar Todos os Dados',
+                    infoSaved: 'Informacoes do vendedor salvas',
+                    dataCleared: 'Todos os dados foram limpos'
+                },
+                common: {
+                    cancel: 'Cancelar',
+                    save: 'Salvar',
+                    confirm: 'Confirmar',
+                    delete: 'Excluir',
+                    confirmDelete: 'Tem certeza que deseja excluir este item?',
+                    success: 'Sucesso',
+                    error: 'Erro',
+                    warning: 'Aviso'
+                }
+            },
+            es: {
+                menu: {
+                    main: 'Principal',
+                    dashboard: 'Panel',
+                    leads: 'Leads',
+                    clients: 'Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    tools: 'Herramientas',
+                    messageGenerator: 'Generador de Mensajes',
+                    templates: 'Plantillas',
+                    settings: 'Configuracion'
+                },
+                dashboard: {
+                    totalLeads: 'Total de Leads',
+                    totalClients: 'Total de Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    pendingFollowups: 'Seguimientos Pendientes',
+                    recentLeads: 'Leads Recientes',
+                    todayReminders: 'Recordatorios de Hoy',
+                    followUpToday: 'Seguimiento para hoy',
+                    followUpOverdue: 'Seguimiento atrasado',
+                    birthdayToday: 'Cumpleanos hoy',
+                    noReminders: 'No hay recordatorios para hoy'
+                },
+                leads: {
+                    addLead: 'Agregar Lead',
+                    editLead: 'Editar Lead',
+                    name: 'Nombre',
+                    company: 'Empresa',
+                    phone: 'Telefono',
+                    email: 'Email',
+                    city: 'Ciudad',
+                    status: 'Estado',
+                    niche: 'Nicho',
+                    subniche: 'Subnicho',
+                    followUp: 'Seguimiento',
+                    followUpDate: 'Fecha de Seguimiento',
+                    birthday: 'Cumpleanos',
+                    notes: 'Notas',
+                    actions: 'Acciones',
+                    edit: 'Editar',
+                    delete: 'Eliminar',
+                    searchLeads: 'Buscar leads...',
+                    allStatus: 'Todos los Estados',
+                    new: 'Nuevo',
+                    contacted: 'Contactado',
+                    followup: 'Seguimiento',
+                    interested: 'Interesado',
+                    client: 'Cliente',
+                    lost: 'Perdido',
+                    noLeads: 'Ningun lead encontrado',
+                    addFirstLead: 'Agrega tu primer lead para comenzar'
+                },
+                clients: {
+                    title: 'Clientes',
+                    noClients: 'Aun no hay clientes',
+                    convertLeads: 'Convierte leads en clientes para verlos aqui'
+                },
+                lost: {
+                    title: 'Leads Perdidos',
+                    noLost: 'Ningun lead perdido',
+                    markAsLost: 'Los leads marcados como perdidos apareceran aqui'
+                },
+                message: {
+                    selectLead: 'Seleccionar Lead',
+                    chooseLead: 'Elige un lead para generar mensaje',
+                    messageType: 'Tipo de Mensaje',
+                    customData: 'Oferta Personalizada (opcional)',
+                    generate: 'Generar Mensaje',
+                    preview: 'Vista Previa',
+                    copy: 'Copiar',
+                    saveTemplate: 'Guardar como Plantilla',
+                    copied: 'Mensaje copiado al portapapeles',
+                    selectLeadFirst: 'Por favor, selecciona un lead primero',
+                    first_contact: 'Primer Contacto',
+                    followup: 'Seguimiento',
+                    reengagement: 'Recompromiso',
+                    proposal: 'Propuesta',
+                    birthday: 'Cumpleanos'
+                },
+                templates: {
+                    createTemplate: 'Crear Plantilla',
+                    templateName: 'Nombre de Plantilla',
+                    messageType: 'Tipo de Mensaje',
+                    messageContent: 'Contenido del Mensaje',
+                    noTemplates: 'Aun no hay plantillas',
+                    createFirst: 'Crea tu primera plantilla de mensaje',
+                    useTemplate: 'Usar',
+                    deleteTemplate: 'Eliminar',
+                    templateSaved: 'Plantilla guardada exitosamente'
+                },
+                settings: {
+                    sellerInfo: 'Informacion del Vendedor',
+                    sellerName: 'Tu Nombre',
+                    sellerCompany: 'Empresa',
+                    sellerNiche: 'Tu Nicho',
+                    sellerSubniche: 'Tu Subnicho',
+                    saveInfo: 'Guardar Informacion',
+                    preferences: 'Preferencias',
+                    language: 'Idioma',
+                    theme: 'Tema',
+                    light: 'Claro',
+                    dark: 'Oscuro',
+                    dangerZone: 'Zona de Peligro',
+                    clearData: 'Limpiar Todos los Datos',
+                    infoSaved: 'Informacion del vendedor guardada',
+                    dataCleared: 'Todos los datos han sido eliminados'
+                },
+                common: {
+                    cancel: 'Cancelar',
+                    save: 'Guardar',
+                    confirm: 'Confirmar',
+                    delete: 'Eliminar',
+                    confirmDelete: 'Estas seguro de que quieres eliminar este elemento?',
+                    success: 'Exito',
+                    error: 'Error',
+                    warning: 'Advertencia'
+                }
+            }
+        };
 
-<select id="status">
-<option>Novo</option>
-<option>Contato feito</option>
-<option>Follow-up</option>
-<option>Interessado</option>
-<option>Cliente</option>
-<option>Perdido</option>
-</select>
+        // ==================== INITIALIZATION ====================
+        function init() {
+            applyTheme();
+            applyLanguage();
+            loadSettings();
+            updateDashboard();
+            renderLeads();
+            populateMessageLeads();
+            renderTemplates();
+            setupNavigation();
+        }
 
-<button onclick="adicionarLead()">Salvar</button>
+        // ==================== NAVIGATION ====================
+        function setupNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const section = item.dataset.section;
+                    navigateTo(section);
+                });
+            });
+        }
 
-<hr>
+        function navigateTo(section) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-section="${section}"]`).classList.add('active');
 
-<h2>Lista</h2>
+            document.querySelectorAll('.content-area > section').forEach(sec => sec.style.display = 'none');
+            document.getElementById(`${section}Section`).style.display = 'block';
 
-<table>
+            const pageTitle = document.querySelector(`[data-section="${section}"] span`).textContent;
+            document.getElementById('pageTitle').textContent = pageTitle;
 
-<thead>
-<tr>
-<th>Nome</th>
-<th>Empresa</th>
-<th>Status</th>
-<th>Ação</th>
-</tr>
-</thead>
+            // Close mobile sidebar
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
 
-<tbody id="lista"></tbody>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('mobileOverlay').classList.toggle('active');
+        }
 
-</table>
+        // ==================== THEME ====================
+        function applyTheme() {
+            if (settings.theme === 'dark') {
+                document.body.classList.add('dark');
+            } else {
+                document.body.classList.remove('dark');
+            }
+            updateThemeIcon();
+        }
 
-</div>
+        function toggleTheme() {
+            settings.theme = settings.theme === 'light' ? 'dark' : 'light';
+            saveSettings();
+            applyTheme();
+        }
 
-</div>
+        function setTheme(theme) {
+            settings.theme = theme;
+            saveSettings();
+            applyTheme();
+        }
 
-<script>
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (settings.theme === 'dark') {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+            } else {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+            }
+        }
 
-let idioma = "pt";
+        // ==================== LANGUAGE ====================
+        function applyLanguage() {
+            const lang = settings.language;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                const translation = getTranslation(key, lang);
+                if (translation) {
+                    el.textContent = translation;
+                }
+            });
+            document.getElementById('langSelect').value = lang;
+            if (document.getElementById('settingsLang')) {
+                document.getElementById('settingsLang').value = lang;
+            }
+        }
 
-let textos = {
-pt: {
-dashboard: "Dashboard",
-leads: "Leads"
-},
-es: {
-dashboard: "Panel",
-leads: "Contactos"
-},
-en: {
-dashboard: "Dashboard",
-leads: "Leads"
-}
-};
+        function getTranslation(key, lang) {
+            const keys = key.split('.');
+            let obj = translations[lang];
+            for (const k of keys) {
+                if (obj && obj[k]) {
+                    obj = obj[k];
+                } else {
+                    return null;
+                }
+            }
+            return obj;
+        }
 
-function mudarIdioma(lang) {
-idioma = lang;
-document.getElementById("titulo").innerText = textos[lang].dashboard;
-}
+        function changeLanguage(lang) {
+            settings.language = lang;
+            saveSettings();
+            applyLanguage();
+        }
 
-function toggleTema() {
-document.body.classList.toggle("light");
-}
+        // ==================== SETTINGS ====================
+        function saveSettings() {
+            localStorage.setItem('leadforge_settings', JSON.stringify(settings));
+        }
 
-function mostrar(secao) {
+        function loadSettings() {
+            document.getElementById('sellerName').value = settings.seller?.name || '';
+            document.getElementById('sellerCompany').value = settings.seller?.company || '';
+            document.getElementById('sellerNiche').value = settings.seller?.niche || '';
+            document.getElementById('sellerSubniche').value = settings.seller?.subniche || '';
+            document.getElementById('settingsLang').value = settings.language;
+        }
 
-document.getElementById("dashboard").style.display = "none";
-document.getElementById("leads").style.display = "none";
+        function saveSellerInfo() {
+            settings.seller = {
+                name: document.getElementById('sellerName').value,
+                company: document.getElementById('sellerCompany').value,
+                niche: document.getElementById('sellerNiche').value,
+                subniche: document.getElementById('sellerSubniche').value
+            };
+            saveSettings();
+            showToast(getTranslation('settings.infoSaved', settings.language) || 'Seller information saved', 'success');
+        }
 
-document.getElementById(secao).style.display = "block";
+        function clearAllData() {
+            showConfirmModal(
+                getTranslation('common.confirmDelete', settings.language) || 'Are you sure you want to delete all data?',
+                () => {
+                    localStorage.removeItem('leadforge_leads');
+                    localStorage.removeItem('leadforge_templates');
+                    leads = [];
+                    templates = [];
+                    updateDashboard();
+                    renderLeads();
+                    renderTemplates();
+                    populateMessageLeads();
+                    showToast(getTranslation('settings.dataCleared', settings.language) || 'All data has been cleared', 'success');
+                }
+            );
+        }
 
-}
+        // ==================== LEADS CRUD ====================
+        function openLeadModal(id = null) {
+            const modal = document.getElementById('leadModal');
+            const title = document.getElementById('leadModalTitle');
+            
+            if (id) {
+                const lead = leads.find(l => l.id === id);
+                if (lead) {
+                    title.textContent = getTranslation('leads.editLead', settings.language) || 'Edit Lead';
+                    document.getElementById('leadId').value = lead.id;
+                    document.getElementById('leadName').value = lead.name || '';
+                    document.getElementById('leadCompany').value = lead.company || '';
+                    document.getElementById('leadPhone').value = lead.phone || '';
+                    document.getElementById('leadEmail').value = lead.email || '';
+                    document.getElementById('leadCity').value = lead.city || '';
+                    document.getElementById('leadStatus').value = lead.status || 'new';
+                    document.getElementById('leadNiche').value = lead.niche || '';
+                    document.getElementById('leadSubniche').value = lead.subniche || '';
+                    document.getElementById('leadFollowUp').value = lead.followUp || '';
+                    document.getElementById('leadBirthday').value = lead.birthday || '';
+                    document.getElementById('leadNotes').value = lead.notes || '';
+                }
+            } else {
+                title.textContent = getTranslation('leads.addLead', settings.language) || 'Add Lead';
+                document.getElementById('leadForm').reset();
+                document.getElementById('leadId').value = '';
+            }
+            
+            modal.classList.add('active');
+        }
 
-let leads = JSON.parse(localStorage.getItem("leads")) || [];
+        function closeLeadModal() {
+            document.getElementById('leadModal').classList.remove('active');
+        }
 
-function salvar() {
-localStorage.setItem("leads", JSON.stringify(leads));
-}
+        function saveLead() {
+            const id = document.getElementById('leadId').value;
+            const leadData = {
+                id: id || Date.now().toString(),
+                name: document.getElementById('leadName').value,
+                company: document.getElementById('leadCompany').value,
+                phone: document.getElementById('leadPhone').value,
+                email: document.getElementById('leadEmail').value,
+                city: document.getElementById('leadCity').value,
+                status: document.getElementById('leadStatus').value,
+                niche: document.getElementById('leadNiche').value,
+                subniche: document.getElementById('leadSubniche').value,
+                followUp: document.getElementById('leadFollowUp').value,
+                birthday: document.getElementById('leadBirthday').value,
+                notes: document.getElementById('leadNotes').value,
+                createdAt: id ? leads.find(l => l.id === id)?.createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
 
-function adicionarLead() {
+            if (id) {
+                const index = leads.findIndex(l => l.id === id);
+                leads[index] = leadData;
+            } else {
+                leads.push(leadData);
+            }
 
-let nome = document.getElementById("nome").value;
-let empresa = document.getElementById("empresa").value;
-let telefone = document.getElementById("telefone").value;
-let status = document.getElementById("status").value;
+            localStorage.setItem('leadforge_leads', JSON.stringify(leads));
+            closeLeadModal();
+            renderLeads();
+            updateDashboard();
+            populateMessageLeads();
+            showToast(id ? 'Lead updated successfully' : 'Lead added successfully', 'success');
+        }
 
-if(nome === "") return;
+        function deleteLead(id) {
+            showConfirmModal(
+                getTranslation('common.confirmDelete', settings.language) || 'Are you sure you want to delete this lead?',
+                () => {
+                    leads = leads.filter(l => l.id !== id);
+                    localStorage.setItem('leadforge_leads', JSON.stringify(leads));
+                    renderLeads();
+                    updateDashboard();
+                    populateMessageLeads();
+                    showToast('Lead deleted successfully', 'success');
+                }
+            );
+        }
 
-leads.push({
-nome,
-empresa,
-telefone,
-status
-});
+        function filterLeads() {
+            renderLeads();
+        }
 
-salvar();
-atualizar();
+        function renderLeads() {
+            const search = document.getElementById('searchLeads')?.value?.toLowerCase() || '';
+            const statusFilter = document.getElementById('filterStatus')?.value || '';
+            
+            let filtered = leads.filter(lead => {
+                const matchesSearch = !search || 
+                    lead.name?.toLowerCase().includes(search) ||
+                    lead.company?.toLowerCase().includes(search) ||
+                    lead.email?.toLowerCase().includes(search) ||
+                    lead.phone?.includes(search);
+                const matchesStatus = !statusFilter || lead.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
 
-}
+            const tbody = document.getElementById('leadsTableBody');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </div>
+                                <div class="empty-title">${getTranslation('leads.noLeads', settings.language) || 'No leads found'}</div>
+                                <div class="empty-text">${getTranslation('leads.addFirstLead', settings.language) || 'Add your first lead to get started'}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
 
-function excluir(index) {
+            tbody.innerHTML = filtered.map(lead => {
+                const today = new Date().toISOString().split('T')[0];
+                const isOverdue = lead.followUp && lead.followUp < today;
+                const isToday = lead.followUp === today;
+                const isBirthday = lead.birthday && isBirthdayToday(lead.birthday);
+                
+                let alertBadge = '';
+                if (isOverdue) {
+                    alertBadge = `<span class="status-badge status-followup" style="margin-left: 8px;">Overdue</span>`;
+                } else if (isToday) {
+                    alertBadge = `<span class="status-badge status-interested" style="margin-left: 8px;">Today</span>`;
+                }
+                if (isBirthday) {
+                    alertBadge += `<span class="status-badge" style="margin-left: 4px; background: rgba(236, 72, 153, 0.15); color: #ec4899;">Birthday</span>`;
+                }
 
-leads.splice(index,1);
-salvar();
-atualizar();
+                return `
+                    <tr>
+                        <td>
+                            <strong>${lead.name || '-'}</strong>
+                            ${alertBadge}
+                        </td>
+                        <td>${lead.company || '-'}</td>
+                        <td>${lead.phone || '-'}</td>
+                        <td><span class="status-badge status-${lead.status}">${getStatusTranslation(lead.status)}</span></td>
+                        <td>${lead.followUp ? formatDate(lead.followUp) : '-'}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-icon btn-sm" onclick="openLeadModal('${lead.id}')" title="Edit">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-icon btn-sm btn-danger" onclick="deleteLead('${lead.id}')" title="Delete">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
 
-}
+            // Also update clients and lost sections
+            renderClients();
+            renderLost();
+        }
 
-function atualizar() {
+        function renderClients() {
+            const clients = leads.filter(l => l.status === 'client');
+            const tbody = document.getElementById('clientsTableBody');
+            
+            if (clients.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <polyline points="16 11 18 13 22 9"/>
+                                    </svg>
+                                </div>
+                                <div class="empty-title">${getTranslation('clients.noClients', settings.language) || 'No clients yet'}</div>
+                                <div class="empty-text">${getTranslation('clients.convertLeads', settings.language) || 'Convert leads to clients to see them here'}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
 
-let tabela = document.getElementById("lista");
+            tbody.innerHTML = clients.map(lead => `
+                <tr>
+                    <td><strong>${lead.name || '-'}</strong></td>
+                    <td>${lead.company || '-'}</td>
+                    <td>${lead.phone || '-'}</td>
+                    <td>${lead.email || '-'}</td>
+                    <td>${lead.niche || '-'}</td>
+                    <td>
+                        <button class="btn btn-icon btn-sm" onclick="openLeadModal('${lead.id}')" title="Edit">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
-tabela.innerHTML = "";
+        function renderLost() {
+            const lostLeads = leads.filter(l => l.status === 'lost');
+            const tbody = document.getElementById('lostTableBody');
+            
+            if (lostLeads.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="15" y1="9" x2="9" y2="15"/>
+                                        <line x1="9" y1="9" x2="15" y2="15"/>
+                                    </svg>
+                                </div>
+                                <div class="empty-title">${getTranslation('lost.noLost', settings.language) || 'No lost leads'}</div>
+                                <div class="empty-text">${getTranslation('lost.markAsLost', settings.language) || 'Leads marked as lost will appear here'}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
 
-leads.forEach((lead,index)=>{
+            tbody.innerHTML = lostLeads.map(lead => `
+                <tr>
+                    <td><strong>${lead.name || '-'}</strong></td>
+                    <td>${lead.company || '-'}</td>
+                    <td>${lead.phone || '-'}</td>
+                    <td>${lead.notes || '-'}</td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-icon btn-sm" onclick="openLeadModal('${lead.id}')" title="Edit">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-icon btn-sm btn-danger" onclick="deleteLead('${lead.id}')" title="Delete">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
-tabela.innerHTML += `
-<tr>
-<td>${lead.nome}</td>
-<td>${lead.empresa}</td>
-<td>${lead.status}</td>
-<td>
-<button onclick="excluir(${index})">
-Excluir
-</button>
-</td>
-</tr>
-`;
+        // ==================== DASHBOARD ====================
+        function updateDashboard() {
+            document.getElementById('totalLeads').textContent = leads.filter(l => l.status !== 'client' && l.status !== 'lost').length;
+            document.getElementById('totalClients').textContent = leads.filter(l => l.status === 'client').length;
+            document.getElementById('totalLost').textContent = leads.filter(l => l.status === 'lost').length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const pendingFollowups = leads.filter(l => l.followUp && l.followUp <= today && l.status !== 'client' && l.status !== 'lost').length;
+            document.getElementById('pendingFollowups').textContent = pendingFollowups;
 
-});
+            // Recent leads
+            const recentLeads = [...leads].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+            const recentLeadsList = document.getElementById('recentLeadsList');
+            
+            if (recentLeads.length === 0) {
+                recentLeadsList.innerHTML = `<p style="color: var(--text-muted);">No leads yet</p>`;
+            } else {
+                recentLeadsList.innerHTML = recentLeads.map(lead => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <strong>${lead.name || 'Unknown'}</strong>
+                            <div style="font-size: 13px; color: var(--text-secondary);">${lead.company || '-'}</div>
+                        </div>
+                        <span class="status-badge status-${lead.status}">${getStatusTranslation(lead.status)}</span>
+                    </div>
+                `).join('');
+            }
 
-document.getElementById("totalLeads").innerText = leads.length;
+            // Today's reminders
+            const reminders = [];
+            leads.forEach(lead => {
+                if (lead.followUp === today && lead.status !== 'client' && lead.status !== 'lost') {
+                    reminders.push({
+                        type: 'followup',
+                        text: `${lead.name} - Follow-up today`,
+                        color: 'warning'
+                    });
+                }
+                if (lead.followUp && lead.followUp < today && lead.status !== 'client' && lead.status !== 'lost') {
+                    reminders.push({
+                        type: 'overdue',
+                        text: `${lead.name} - Follow-up overdue`,
+                        color: 'danger'
+                    });
+                }
+                if (lead.birthday && isBirthdayToday(lead.birthday)) {
+                    reminders.push({
+                        type: 'birthday',
+                        text: `${lead.name} - Birthday today!`,
+                        color: 'info'
+                    });
+                }
+            });
 
-}
+            const todayReminders = document.getElementById('todayReminders');
+            if (reminders.length === 0) {
+                todayReminders.innerHTML = `<p style="color: var(--text-muted);">No reminders for today</p>`;
+            } else {
+                todayReminders.innerHTML = reminders.map(r => `
+                    <div class="alert alert-${r.color}" style="margin-bottom: 8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            ${r.type === 'birthday' 
+                                ? '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'
+                                : r.type === 'overdue'
+                                ? '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
+                                : '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'
+                            }
+                        </svg>
+                        <span>${r.text}</span>
+                    </div>
+                `).join('');
+            }
 
-atualizar();
+            // Dashboard alerts
+            const alertsContainer = document.getElementById('alertsContainer');
+            const allAlerts = [];
+            
+            leads.forEach(lead => {
+                if (lead.followUp === today && lead.status !== 'client' && lead.status !== 'lost') {
+                    allAlerts.push(`<div class="alert alert-warning"><strong>${lead.name}</strong> - Follow-up due today</div>`);
+                }
+                if (lead.birthday && isBirthdayToday(lead.birthday)) {
+                    allAlerts.push(`<div class="alert alert-info"><strong>${lead.name}</strong> - Birthday today!</div>`);
+                }
+            });
 
-</script>
+            alertsContainer.innerHTML = allAlerts.slice(0, 3).join('');
+        }
 
+        // ==================== MESSAGE GENERATOR ====================
+        function populateMessageLeads() {
+            const select = document.getElementById('messageLeadSelect');
+            select.innerHTML = '<option value="">-- Select Lead --</option>' +
+                leads.map(lead => `<option value="${lead.id}">${lead.name} ${lead.company ? `(${lead.company})` : ''}</option>`).join('');
+        }
+
+        function selectLeadForMessage() {
+            generateMessage();
+        }
+
+        function generateMessage() {
+            const leadId = document.getElementById('messageLeadSelect').value;
+            const messageType = document.getElementById('messageType').value;
+            const customOffer = document.getElementById('customOffer').value;
+            
+            if (!leadId) {
+                document.getElementById('messagePreview').textContent = getTranslation('message.selectLeadFirst', settings.language) || 'Please select a lead first';
+                return;
+            }
+
+            const lead = leads.find(l => l.id === leadId);
+            if (!lead) return;
+
+            const seller = settings.seller || {};
+            const message = buildMessage(lead, seller, messageType, customOffer);
+            document.getElementById('messagePreview').textContent = message;
+        }
+
+        function buildMessage(lead, seller, type, customOffer) {
+            const lang = settings.language;
+            const name = lead.name || '';
+            const company = lead.company || '';
+            const niche = lead.niche || '';
+            const subniche = lead.subniche || '';
+            const sellerName = seller.name || '';
+            const sellerCompany = seller.company || '';
+            const sellerNiche = seller.niche || '';
+            const sellerSubniche = seller.subniche || '';
+
+            let greeting, body, closing;
+
+            switch (type) {
+                case 'first_contact':
+                    greeting = name ? `Olá, ${name}!` : 'Olá, tudo bem?';
+                    body = company 
+                        ? `Vi que você trabalha na ${company} e achei muito interessante o trabalho de vocês${niche ? ` no segmento de ${niche}` : ''}.`
+                        : niche 
+                            ? `Vi que você atua no segmento de ${niche} e achei muito interessante.`
+                            : 'Gostaria de apresentar uma oportunidade interessante para o seu negócio.';
+                    closing = sellerName 
+                        ? `Me chamo ${sellerName}${sellerCompany ? `, da ${sellerCompany}` : ''} e gostaria de conversar sobre como posso ajudar.${customOffer ? ` ${customOffer}` : ''}`
+                        : customOffer || 'Podemos conversar para entender como posso ajudar?';
+                    break;
+
+                case 'followup':
+                    greeting = name ? `Olá, ${name}!` : 'Olá!';
+                    body = company 
+                        ? `Passando para dar continuidade à nossa conversa sobre ${niche || 'o negócio'} na ${company}.`
+                        : 'Passando para dar continuidade à nossa última conversa.';
+                    closing = sellerName 
+                        ? `${sellerName}${sellerCompany ? ` | ${sellerCompany}` : ''}.${customOffer ? `\n\n${customOffer}` : ''}`
+                        : customOffer || 'Quando seria um bom momento para conversarmos?';
+                    break;
+
+                case 'reengagement':
+                    greeting = name ? `Oi ${name}, tudo bem?` : 'Oi, tudo bem?';
+                    body = 'Faz um tempo que não conversamos e gostaria de retomar o contato.';
+                    closing = company 
+                        ? `Como estão as coisas na ${company}?`
+                        : 'Tenho algumas novidades que podem interessar você.';
+                    if (customOffer) closing += `\n\n${customOffer}`;
+                    break;
+
+                case 'proposal':
+                    greeting = name ? `${name},` : 'Prezado(a),';
+                    body = company 
+                        ? `Conforme nossa conversa, segue a proposta para ${company}${niche ? ` no segmento de ${niche}` : ''}.`
+                        : 'Conforme combinado, segue nossa proposta.';
+                    closing = sellerName 
+                        ? `Fico à disposição.\n\n${sellerName}${sellerCompany ? `\n${sellerCompany}` : ''}`
+                        : 'Fico à disposição para esclarecimentos.';
+                    if (customOffer) closing += `\n\n${customOffer}`;
+                    break;
+
+                case 'birthday':
+                    greeting = name ? `${name}!` : 'Parabéns!';
+                    body = `Feliz aniversário! Desejo um dia muito especial e um ano repleto de conquistas.`;
+                    closing = company 
+                        ? `Que a ${company} continue crescendo muito!`
+                        : 'Muita saúde, sucesso e felicidade!';
+                    if (sellerName) closing += `\n\n${sellerName}${sellerCompany ? ` | ${sellerCompany}` : ''}`;
+                    break;
+
+                default:
+                    greeting = 'Olá!';
+                    body = 'Mensagem padrão.';
+                    closing = 'Atenciosamente.';
+            }
+
+            return `${greeting}\n\n${body}\n\n${closing}`;
+        }
+
+        function copyMessage() {
+            const message = document.getElementById('messagePreview').textContent;
+            navigator.clipboard.writeText(message).then(() => {
+                showToast(getTranslation('message.copied', settings.language) || 'Message copied to clipboard', 'success');
+            });
+        }
+
+        function saveMessageAsTemplate() {
+            const content = document.getElementById('messagePreview').textContent;
+            document.getElementById('templateContent').value = content;
+            navigateTo('templates');
+            openTemplateModal();
+        }
+
+        // ==================== TEMPLATES ====================
+        function openTemplateModal() {
+            document.getElementById('templateForm').reset();
+            document.getElementById('templateId').value = '';
+            document.getElementById('templateModalTitle').textContent = getTranslation('templates.createTemplate', settings.language) || 'Create Template';
+            document.getElementById('templateModal').classList.add('active');
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('templateModal').classList.remove('active');
+        }
+
+        function saveTemplate() {
+            const id = document.getElementById('templateId').value;
+            const templateData = {
+                id: id || Date.now().toString(),
+                name: document.getElementById('templateName').value,
+                type: document.getElementById('templateType').value,
+                content: document.getElementById('templateContent').value,
+                createdAt: id ? templates.find(t => t.id === id)?.createdAt : new Date().toISOString()
+            };
+
+            if (id) {
+                const index = templates.findIndex(t => t.id === id);
+                templates[index] = templateData;
+            } else {
+                templates.push(templateData);
+            }
+
+            localStorage.setItem('leadforge_templates', JSON.stringify(templates));
+            closeTemplateModal();
+            renderTemplates();
+            showToast(getTranslation('templates.templateSaved', settings.language) || 'Template saved successfully', 'success');
+        }
+
+        function deleteTemplate(id) {
+            showConfirmModal(
+                getTranslation('common.confirmDelete', settings.language) || 'Are you sure you want to delete this template?',
+                () => {
+                    templates = templates.filter(t => t.id !== id);
+                    localStorage.setItem('leadforge_templates', JSON.stringify(templates));
+                    renderTemplates();
+                    showToast('Template deleted successfully', 'success');
+                }
+            );
+        }
+
+        function useTemplate(id) {
+            const template = templates.find(t => t.id === id);
+            if (template) {
+                const leadId = document.getElementById('messageLeadSelect').value;
+                const lead = leads.find(l => l.id === leadId);
+                const seller = settings.seller || {};
+                
+                let content = template.content;
+                if (lead) {
+                    content = content.replace(/{name}/g, lead.name || '');
+                    content = content.replace(/{company}/g, lead.company || '');
+                    content = content.replace(/{niche}/g, lead.niche || '');
+                    content = content.replace(/{subniche}/g, lead.subniche || '');
+                }
+                content = content.replace(/{seller_name}/g, seller.name || '');
+                content = content.replace(/{seller_company}/g, seller.company || '');
+                
+                document.getElementById('messagePreview').textContent = content;
+                navigateTo('messages');
+            }
+        }
+
+        function renderTemplates() {
+            const container = document.getElementById('templatesList');
+            
+            if (templates.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="3" y1="9" x2="21" y2="9"/>
+                                <line x1="9" y1="21" x2="9" y2="9"/>
+                            </svg>
+                        </div>
+                        <div class="empty-title">${getTranslation('templates.noTemplates', settings.language) || 'No templates yet'}</div>
+                        <div class="empty-text">${getTranslation('templates.createFirst', settings.language) || 'Create your first message template'}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = templates.map(template => `
+                <div style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <h4 style="margin-bottom: 4px;">${template.name}</h4>
+                            <span class="status-badge status-${template.type}" style="font-size: 11px;">${getTranslation(`message.${template.type}`, settings.language) || template.type}</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-sm btn-primary" onclick="useTemplate('${template.id}')">
+                                ${getTranslation('templates.useTemplate', settings.language) || 'Use'}
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTemplate('${template.id}')">
+                                ${getTranslation('templates.deleteTemplate', settings.language) || 'Delete'}
+                            </button>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-primary); padding: 12px; border-radius: 8px; font-size: 13px; white-space: pre-wrap; max-height: 100px; overflow: hidden;">${template.content}</div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== CONFIRM MODAL ====================
+        function showConfirmModal(text, callback) {
+            document.getElementById('confirmModalText').textContent = text;
+            document.getElementById('confirmModal').classList.add('active');
+            confirmCallback = callback;
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            confirmCallback = null;
+        }
+
+        function confirmAction() {
+            if (confirmCallback) {
+                confirmCallback();
+            }
+            closeConfirmModal();
+        }
+
+        // ==================== TOAST ====================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    ${type === 'success' 
+                        ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'
+                        : '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
+                    }
+                </svg>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ==================== HELPERS ====================
+        function getStatusTranslation(status) {
+            return getTranslation(`leads.${status}`, settings.language) || status;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString(settings.language === 'pt' ? 'pt-BR' : settings.language === 'es' ? 'es-ES' : 'en-US');
+        }
+
+        function isBirthdayToday(birthday) {
+            if (!birthday) return false;
+            const today = new Date();
+            const bday = new Date(birthday + 'T00:00:00');
+            return today.getMonth() === bday.getMonth() && today.getDate() === bday.getDate();
+        }
+
+        // ==================== START ====================
+        init();
+    </script>
 </body>
 </html>
