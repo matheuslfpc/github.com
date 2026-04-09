@@ -1,0 +1,3076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadForge - Lead Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-sidebar: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #0891b2;
+            --accent-hover: #0e7490;
+            --accent-light: rgba(8, 145, 178, 0.1);
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
+        .dark {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-sidebar: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent: #06b6d4;
+            --accent-hover: #22d3ee;
+            --accent-light: rgba(6, 182, 212, 0.15);
+            --border: #334155;
+            --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--bg-sidebar);
+            z-index: 100;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #0e7490);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .theme-toggle, .lang-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover, .lang-select:hover {
+            border-color: var(--accent);
+        }
+
+        .lang-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        .content-area {
+            padding: 32px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .stat-icon.orange {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: var(--accent-light);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: rgba(107, 114, 128, 0.15);
+            color: #6b7280;
+        }
+
+        .status-contacted {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .status-followup {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .status-interested {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+        }
+
+        .status-client {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .status-lost {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .status-dropdown {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .status-dropdown:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .status-dropdown.new {
+            background: rgba(107, 114, 128, 0.1);
+            border-color: rgba(107, 114, 128, 0.3);
+            color: #6b7280;
+        }
+
+        .status-dropdown.contacted {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+        }
+
+        .status-dropdown.followup {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+
+        .status-dropdown.interested {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.3);
+            color: #a855f7;
+        }
+
+        .status-dropdown.client {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .status-dropdown.lost {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-icon {
+            padding: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-input input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .search-input svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .filter-select {
+            min-width: 140px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .alert-info {
+            background: rgba(6, 182, 212, 0.15);
+            color: #06b6d4;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            padding: 16px 20px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastIn 0.3s ease;
+            min-width: 300px;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .message-preview {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 150px;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .grid-4, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 12px 16px;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+        }
+
+        .niche-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            background: var(--accent-light);
+            color: var(--accent);
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">LeadForge</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title" data-i18n="menu.main">Main</div>
+                <div class="nav-item active" data-section="dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="9"/>
+                        <rect x="14" y="3" width="7" height="5"/>
+                        <rect x="14" y="12" width="7" height="9"/>
+                        <rect x="3" y="16" width="7" height="5"/>
+                    </svg>
+                    <span data-i18n="menu.dashboard">Dashboard</span>
+                </div>
+                <div class="nav-item" data-section="leads">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span data-i18n="menu.leads">Leads</span>
+                </div>
+                <div class="nav-item" data-section="clients">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <polyline points="16 11 18 13 22 9"/>
+                    </svg>
+                    <span data-i18n="menu.clients">Clients</span>
+                </div>
+                <div class="nav-item" data-section="lost">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    <span data-i18n="menu.lostLeads">Lost Leads</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title" data-i18n="menu.tools">Tools</div>
+                <div class="nav-item" data-section="messages">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span data-i18n="menu.messageGenerator">Message Generator</span>
+                </div>
+                <div class="nav-item" data-section="templates">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/>
+                        <line x1="9" y1="21" x2="9" y2="9"/>
+                    </svg>
+                    <span data-i18n="menu.templates">Templates</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title" data-i18n="menu.settings">Settings</div>
+                <div class="nav-item" data-section="profile">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span data-i18n="menu.myProfile">My Profile</span>
+                </div>
+                <div class="nav-item" data-section="settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span data-i18n="menu.settings">Settings</span>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <h1 class="header-title" id="pageTitle" data-i18n="menu.dashboard">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="pt">Portugues</option>
+                    <option value="es">Espanol</option>
+                </select>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <span data-i18n="settings.theme">Theme</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="fade-in">
+                <div id="alertsContainer"></div>
+                <div class="grid-4" style="margin-bottom: 32px;">
+                    <div class="card stat-card">
+                        <div class="stat-icon blue">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="totalLeads">0</div>
+                            <div class="stat-label" data-i18n="dashboard.totalLeads">Total Leads</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon green">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <polyline points="16 11 18 13 22 9"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="totalClients">0</div>
+                            <div class="stat-label" data-i18n="dashboard.totalClients">Total Clients</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon red">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="15" y1="9" x2="9" y2="15"/>
+                                <line x1="9" y1="9" x2="15" y2="15"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="totalLost">0</div>
+                            <div class="stat-label" data-i18n="dashboard.lostLeads">Lost Leads</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-icon orange">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="stat-value" id="pendingFollowups">0</div>
+                            <div class="stat-label" data-i18n="dashboard.pendingFollowups">Pending Follow-ups</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="dashboard.recentLeads">Recent Leads</h3>
+                        <div id="recentLeadsList"></div>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="dashboard.todayReminders">Today's Reminders</h3>
+                        <div id="todayReminders"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leads Section -->
+            <section id="leadsSection" class="fade-in" style="display: none;">
+                <div class="search-bar">
+                    <div class="search-input">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" id="searchLeads" data-i18n-placeholder="leads.searchPlaceholder" placeholder="Search by name, company or phone..." oninput="filterLeads()">
+                    </div>
+                    <select class="form-select filter-select" id="filterStatus" onchange="filterLeads()">
+                        <option value="" data-i18n="leads.allStatus">All Status</option>
+                        <option value="new" data-i18n="status.new">New</option>
+                        <option value="contacted" data-i18n="status.contacted">Contacted</option>
+                        <option value="followup" data-i18n="status.followup">Follow-up</option>
+                        <option value="interested" data-i18n="status.interested">Interested</option>
+                        <option value="client" data-i18n="status.client">Client</option>
+                        <option value="lost" data-i18n="status.lost">Lost</option>
+                    </select>
+                    <select class="form-select filter-select" id="filterNiche" onchange="filterLeads()">
+                        <option value="" data-i18n="leads.allNiches">All Niches</option>
+                    </select>
+                    <select class="form-select filter-select" id="filterSubniche" onchange="filterLeads()">
+                        <option value="" data-i18n="leads.allSubniches">All Subniches</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openLeadModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span data-i18n="leads.addLead">Add Lead</span>
+                    </button>
+                </div>
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="leads.name">Name</th>
+                                    <th data-i18n="leads.company">Company</th>
+                                    <th data-i18n="leads.phone">Phone</th>
+                                    <th data-i18n="leads.niche">Niche</th>
+                                    <th data-i18n="leads.status">Status</th>
+                                    <th data-i18n="leads.followUp">Follow-up</th>
+                                    <th data-i18n="leads.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clients Section -->
+            <section id="clientsSection" class="fade-in" style="display: none;">
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="leads.name">Name</th>
+                                    <th data-i18n="leads.company">Company</th>
+                                    <th data-i18n="leads.phone">Phone</th>
+                                    <th data-i18n="leads.email">Email</th>
+                                    <th data-i18n="leads.niche">Niche</th>
+                                    <th data-i18n="leads.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lost Leads Section -->
+            <section id="lostSection" class="fade-in" style="display: none;">
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="leads.name">Name</th>
+                                    <th data-i18n="leads.company">Company</th>
+                                    <th data-i18n="leads.phone">Phone</th>
+                                    <th data-i18n="leads.notes">Notes</th>
+                                    <th data-i18n="leads.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lostTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Message Generator Section -->
+            <section id="messagesSection" class="fade-in" style="display: none;">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="message.selectLead">Select Lead</h3>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="message.chooseLead">Choose a lead to generate message</label>
+                            <select class="form-select" id="messageLeadSelect" onchange="selectLeadForMessage()">
+                                <option value="">-- Select Lead --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="message.messageType">Message Type</label>
+                            <select class="form-select" id="messageType" onchange="generateMessage()">
+                                <option value="first_contact" data-i18n="messageTypes.firstContact">First Contact</option>
+                                <option value="followup" data-i18n="messageTypes.followup">Follow-up</option>
+                                <option value="reengagement" data-i18n="messageTypes.reengagement">Re-engagement</option>
+                                <option value="proposal" data-i18n="messageTypes.proposal">Proposal</option>
+                                <option value="birthday" data-i18n="messageTypes.birthday">Birthday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="message.customData">Custom Offer (optional)</label>
+                            <input type="text" class="form-input" id="customOffer" data-i18n-placeholder="message.customOfferPlaceholder" placeholder="Special offer or promotion...">
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="generateMessage()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            <span data-i18n="message.generate">Generate Message</span>
+                        </button>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="message.preview">Message Preview</h3>
+                        <div class="message-preview" id="messagePreview"></div>
+                        <div style="margin-top: 20px; display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="copyMessage()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                <span data-i18n="message.copy">Copy</span>
+                            </button>
+                            <button class="btn btn-secondary" onclick="saveMessageAsTemplate()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                    <polyline points="17 21 17 13 7 13 7 21"/>
+                                    <polyline points="7 3 7 8 15 8"/>
+                                </svg>
+                                <span data-i18n="message.saveTemplate">Save as Template</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Templates Section -->
+            <section id="templatesSection" class="fade-in" style="display: none;">
+                <div style="margin-bottom: 24px;">
+                    <button class="btn btn-primary" onclick="openTemplateModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span data-i18n="templates.createTemplate">Create Template</span>
+                    </button>
+                </div>
+                <div class="card">
+                    <div id="templatesList"></div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profileSection" class="fade-in" style="display: none;">
+                <div class="card">
+                    <h3 style="margin-bottom: 24px;" data-i18n="profile.title">My Profile</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 24px;" data-i18n="profile.subtitle">This information will be used to personalize your messages automatically.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="profile.name">Your Name</label>
+                            <input type="text" class="form-input" id="profileName" data-i18n-placeholder="profile.namePlaceholder" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="profile.company">Company</label>
+                            <input type="text" class="form-input" id="profileCompany" data-i18n-placeholder="profile.companyPlaceholder" placeholder="Enter your company name">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="profile.phone">Phone</label>
+                            <input type="tel" class="form-input" id="profilePhone" data-i18n-placeholder="profile.phonePlaceholder" placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="profile.email">Email</label>
+                            <input type="email" class="form-input" id="profileEmail" data-i18n-placeholder="profile.emailPlaceholder" placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="profile.niche">Your Niche</label>
+                            <select class="form-select" id="profileNiche" onchange="updateProfileSubniches()">
+                                <option value="" data-i18n="profile.selectNiche">Select your niche</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="profile.subniche">Your Subniche</label>
+                            <select class="form-select" id="profileSubniche">
+                                <option value="" data-i18n="profile.selectSubniche">Select your subniche</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveProfile()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
+                        <span data-i18n="profile.saveProfile">Save Profile</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settingsSection" class="fade-in" style="display: none;">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;" data-i18n="settings.preferences">Preferences</h3>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.language">Language</label>
+                            <select class="form-select" id="settingsLang" onchange="changeLanguage(this.value)">
+                                <option value="en">English</option>
+                                <option value="pt">Portugues</option>
+                                <option value="es">Espanol</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="settings.theme">Theme</label>
+                            <div style="display: flex; gap: 12px; margin-top: 8px;">
+                                <button class="btn btn-secondary" onclick="setTheme('light')" id="lightThemeBtn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="5"/>
+                                        <line x1="12" y1="1" x2="12" y2="3"/>
+                                        <line x1="12" y1="21" x2="12" y2="23"/>
+                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                        <line x1="1" y1="12" x2="3" y2="12"/>
+                                        <line x1="21" y1="12" x2="23" y2="12"/>
+                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                                    </svg>
+                                    <span data-i18n="settings.light">Light</span>
+                                </button>
+                                <button class="btn btn-secondary" onclick="setTheme('dark')" id="darkThemeBtn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                    </svg>
+                                    <span data-i18n="settings.dark">Dark</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="padding-top: 24px; border-top: 1px solid var(--border);">
+                            <h4 style="margin-bottom: 16px; color: var(--danger);" data-i18n="settings.dangerZone">Danger Zone</h4>
+                            <button class="btn btn-danger" onclick="clearAllData()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                                <span data-i18n="settings.clearData">Clear All Data</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Lead Modal -->
+    <div class="modal-overlay" id="leadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="leadModalTitle" data-i18n="leads.addLead">Add Lead</h3>
+                <button class="modal-close" onclick="closeLeadModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="leadForm">
+                    <input type="hidden" id="leadId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.name">Name</label>
+                            <input type="text" class="form-input" id="leadName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.company">Company</label>
+                            <input type="text" class="form-input" id="leadCompany">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.phone">Phone</label>
+                            <input type="tel" class="form-input" id="leadPhone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.email">Email</label>
+                            <input type="email" class="form-input" id="leadEmail">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.city">City</label>
+                            <input type="text" class="form-input" id="leadCity">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.status">Status</label>
+                            <select class="form-select" id="leadStatus">
+                                <option value="new" data-i18n="status.new">New</option>
+                                <option value="contacted" data-i18n="status.contacted">Contacted</option>
+                                <option value="followup" data-i18n="status.followup">Follow-up</option>
+                                <option value="interested" data-i18n="status.interested">Interested</option>
+                                <option value="client" data-i18n="status.client">Client</option>
+                                <option value="lost" data-i18n="status.lost">Lost</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.niche">Niche</label>
+                            <select class="form-select" id="leadNiche" onchange="updateLeadSubniches()">
+                                <option value="" data-i18n="leads.selectNiche">Select Niche</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.subniche">Subniche</label>
+                            <select class="form-select" id="leadSubniche">
+                                <option value="" data-i18n="leads.selectSubniche">Select Subniche</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.followUpDate">Follow-up Date</label>
+                            <input type="date" class="form-input" id="leadFollowUp">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="leads.birthday">Birthday</label>
+                            <input type="date" class="form-input" id="leadBirthday">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="leads.notes">Notes</label>
+                        <textarea class="form-textarea" id="leadNotes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeLeadModal()" data-i18n="common.cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="saveLead()" data-i18n="common.save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Modal -->
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="templateModalTitle" data-i18n="templates.createTemplate">Create Template</h3>
+                <button class="modal-close" onclick="closeTemplateModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="templateForm">
+                    <input type="hidden" id="templateId">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="templates.templateName">Template Name</label>
+                        <input type="text" class="form-input" id="templateName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="templates.messageType">Message Type</label>
+                        <select class="form-select" id="templateType">
+                            <option value="first_contact" data-i18n="messageTypes.firstContact">First Contact</option>
+                            <option value="followup" data-i18n="messageTypes.followup">Follow-up</option>
+                            <option value="reengagement" data-i18n="messageTypes.reengagement">Re-engagement</option>
+                            <option value="proposal" data-i18n="messageTypes.proposal">Proposal</option>
+                            <option value="birthday" data-i18n="messageTypes.birthday">Birthday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="templates.messageContent">Message Content</label>
+                        <textarea class="form-textarea" id="templateContent" rows="6" required></textarea>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;" data-i18n="templates.placeholders">
+                            Use placeholders: {name}, {company}, {niche}, {subniche}, {seller_name}, {seller_company}
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTemplateModal()" data-i18n="common.cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="saveTemplate()" data-i18n="common.save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmModalTitle" data-i18n="common.confirm">Confirm</h3>
+                <button class="modal-close" onclick="closeConfirmModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalText" data-i18n="common.confirmDelete">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()" data-i18n="common.cancel">Cancel</button>
+                <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()" data-i18n="common.delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA STRUCTURES ====================
+        
+        // Niche and Subniche data
+        const nicheData = {
+            health: {
+                name: { en: 'Health', pt: 'Saude', es: 'Salud' },
+                subniches: {
+                    dentist: { en: 'Dentist', pt: 'Dentista', es: 'Dentista' },
+                    psychologist: { en: 'Psychologist', pt: 'Psicologo', es: 'Psicologo' },
+                    nutritionist: { en: 'Nutritionist', pt: 'Nutricionista', es: 'Nutricionista' },
+                    physiotherapist: { en: 'Physiotherapist', pt: 'Fisioterapeuta', es: 'Fisioterapeuta' },
+                    clinic: { en: 'Clinic', pt: 'Clinica', es: 'Clinica' },
+                    medical_doctor: { en: 'Medical Doctor', pt: 'Medico', es: 'Medico' }
+                }
+            },
+            fitness: {
+                name: { en: 'Fitness', pt: 'Fitness', es: 'Fitness' },
+                subniches: {
+                    personal_trainer: { en: 'Personal Trainer', pt: 'Personal Trainer', es: 'Entrenador Personal' },
+                    gym: { en: 'Gym', pt: 'Academia', es: 'Gimnasio' },
+                    crossfit: { en: 'Crossfit', pt: 'Crossfit', es: 'Crossfit' },
+                    pilates: { en: 'Pilates', pt: 'Pilates', es: 'Pilates' },
+                    yoga: { en: 'Yoga', pt: 'Yoga', es: 'Yoga' }
+                }
+            },
+            beauty: {
+                name: { en: 'Beauty', pt: 'Beleza', es: 'Belleza' },
+                subniches: {
+                    hair_salon: { en: 'Hair Salon', pt: 'Salao de Cabelo', es: 'Peluqueria' },
+                    barbershop: { en: 'Barbershop', pt: 'Barbearia', es: 'Barberia' },
+                    aesthetic_clinic: { en: 'Aesthetic Clinic', pt: 'Clinica de Estetica', es: 'Clinica Estetica' },
+                    nail_designer: { en: 'Nail Designer', pt: 'Designer de Unhas', es: 'Manicura' },
+                    makeup_artist: { en: 'Makeup Artist', pt: 'Maquiador', es: 'Maquillador' }
+                }
+            },
+            legal: {
+                name: { en: 'Legal', pt: 'Juridico', es: 'Juridico' },
+                subniches: {
+                    lawyer: { en: 'Lawyer', pt: 'Advogado', es: 'Abogado' },
+                    law_firm: { en: 'Law Firm', pt: 'Escritorio de Advocacia', es: 'Bufete de Abogados' },
+                    family_law: { en: 'Family Law', pt: 'Direito de Familia', es: 'Derecho Familiar' },
+                    criminal_law: { en: 'Criminal Law', pt: 'Direito Criminal', es: 'Derecho Penal' },
+                    corporate_law: { en: 'Corporate Law', pt: 'Direito Corporativo', es: 'Derecho Corporativo' }
+                }
+            },
+            real_estate: {
+                name: { en: 'Real Estate', pt: 'Imobiliario', es: 'Inmobiliario' },
+                subniches: {
+                    real_estate_agent: { en: 'Real Estate Agent', pt: 'Corretor de Imoveis', es: 'Agente Inmobiliario' },
+                    broker: { en: 'Broker', pt: 'Corretor', es: 'Corredor' },
+                    property_management: { en: 'Property Management', pt: 'Administracao de Imoveis', es: 'Gestion de Propiedades' },
+                    construction: { en: 'Construction', pt: 'Construcao', es: 'Construccion' }
+                }
+            },
+            education: {
+                name: { en: 'Education', pt: 'Educacao', es: 'Educacion' },
+                subniches: {
+                    school: { en: 'School', pt: 'Escola', es: 'Escuela' },
+                    private_tutor: { en: 'Private Tutor', pt: 'Professor Particular', es: 'Tutor Privado' },
+                    language_school: { en: 'Language School', pt: 'Escola de Idiomas', es: 'Escuela de Idiomas' },
+                    online_course: { en: 'Online Course', pt: 'Curso Online', es: 'Curso Online' }
+                }
+            },
+            finance: {
+                name: { en: 'Finance', pt: 'Financas', es: 'Finanzas' },
+                subniches: {
+                    accountant: { en: 'Accountant', pt: 'Contador', es: 'Contador' },
+                    financial_advisor: { en: 'Financial Advisor', pt: 'Consultor Financeiro', es: 'Asesor Financiero' },
+                    insurance_broker: { en: 'Insurance Broker', pt: 'Corretor de Seguros', es: 'Corredor de Seguros' }
+                }
+            },
+            automotive: {
+                name: { en: 'Automotive', pt: 'Automotivo', es: 'Automotriz' },
+                subniches: {
+                    mechanic: { en: 'Mechanic', pt: 'Mecanico', es: 'Mecanico' },
+                    car_dealer: { en: 'Car Dealer', pt: 'Concessionaria', es: 'Concesionario' },
+                    car_wash: { en: 'Car Wash', pt: 'Lavagem de Carro', es: 'Lavado de Auto' },
+                    auto_repair: { en: 'Auto Repair', pt: 'Auto Peca', es: 'Reparacion de Autos' }
+                }
+            },
+            food: {
+                name: { en: 'Food', pt: 'Alimentacao', es: 'Alimentacion' },
+                subniches: {
+                    restaurant: { en: 'Restaurant', pt: 'Restaurante', es: 'Restaurante' },
+                    pizzeria: { en: 'Pizzeria', pt: 'Pizzaria', es: 'Pizzeria' },
+                    bakery: { en: 'Bakery', pt: 'Padaria', es: 'Panaderia' },
+                    delivery: { en: 'Delivery', pt: 'Delivery', es: 'Delivery' }
+                }
+            },
+            technology: {
+                name: { en: 'Technology', pt: 'Tecnologia', es: 'Tecnologia' },
+                subniches: {
+                    software_company: { en: 'Software Company', pt: 'Empresa de Software', es: 'Empresa de Software' },
+                    it_support: { en: 'IT Support', pt: 'Suporte de TI', es: 'Soporte IT' },
+                    digital_agency: { en: 'Digital Agency', pt: 'Agencia Digital', es: 'Agencia Digital' }
+                }
+            }
+        };
+
+        // Storage keys (prepared for multi-user future)
+        const STORAGE_KEYS = {
+            leads: 'leadforge_leads',
+            templates: 'leadforge_templates',
+            settings: 'leadforge_settings',
+            profile: 'leadforge_profile',
+            userId: 'leadforge_user_id'
+        };
+
+        let leads = JSON.parse(localStorage.getItem(STORAGE_KEYS.leads)) || [];
+        let templates = JSON.parse(localStorage.getItem(STORAGE_KEYS.templates)) || [];
+        let settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings)) || {
+            language: 'en',
+            theme: 'light'
+        };
+        let profile = JSON.parse(localStorage.getItem(STORAGE_KEYS.profile)) || {
+            name: '',
+            company: '',
+            phone: '',
+            email: '',
+            niche: '',
+            subniche: ''
+        };
+        let confirmCallback = null;
+
+        // ==================== TRANSLATIONS ====================
+        const translations = {
+            en: {
+                menu: {
+                    main: 'Main',
+                    dashboard: 'Dashboard',
+                    leads: 'Leads',
+                    clients: 'Clients',
+                    lostLeads: 'Lost Leads',
+                    tools: 'Tools',
+                    messageGenerator: 'Message Generator',
+                    templates: 'Templates',
+                    myProfile: 'My Profile',
+                    settings: 'Settings'
+                },
+                dashboard: {
+                    totalLeads: 'Total Leads',
+                    totalClients: 'Total Clients',
+                    lostLeads: 'Lost Leads',
+                    pendingFollowups: 'Pending Follow-ups',
+                    recentLeads: 'Recent Leads',
+                    todayReminders: "Today's Reminders",
+                    followUpToday: 'Follow-up due today',
+                    followUpOverdue: 'Follow-up overdue',
+                    birthdayToday: 'Birthday today',
+                    noReminders: 'No reminders for today',
+                    noLeads: 'No leads yet'
+                },
+                leads: {
+                    addLead: 'Add Lead',
+                    editLead: 'Edit Lead',
+                    name: 'Name',
+                    company: 'Company',
+                    phone: 'Phone',
+                    email: 'Email',
+                    city: 'City',
+                    status: 'Status',
+                    niche: 'Niche',
+                    subniche: 'Subniche',
+                    followUp: 'Follow-up',
+                    followUpDate: 'Follow-up Date',
+                    birthday: 'Birthday',
+                    notes: 'Notes',
+                    actions: 'Actions',
+                    edit: 'Edit',
+                    delete: 'Delete',
+                    searchPlaceholder: 'Search by name, company or phone...',
+                    allStatus: 'All Status',
+                    allNiches: 'All Niches',
+                    allSubniches: 'All Subniches',
+                    selectNiche: 'Select Niche',
+                    selectSubniche: 'Select Subniche',
+                    noLeads: 'No leads found',
+                    addFirstLead: 'Add your first lead to get started',
+                    leadSaved: 'Lead saved successfully',
+                    leadDeleted: 'Lead deleted successfully'
+                },
+                status: {
+                    new: 'New',
+                    contacted: 'Contacted',
+                    followup: 'Follow-up',
+                    interested: 'Interested',
+                    client: 'Client',
+                    lost: 'Lost'
+                },
+                clients: {
+                    title: 'Clients',
+                    noClients: 'No clients yet',
+                    convertLeads: 'Convert leads to clients to see them here'
+                },
+                lost: {
+                    title: 'Lost Leads',
+                    noLost: 'No lost leads',
+                    markAsLost: 'Leads marked as lost will appear here'
+                },
+                message: {
+                    selectLead: 'Select Lead',
+                    chooseLead: 'Choose a lead to generate message',
+                    messageType: 'Message Type',
+                    customData: 'Custom Offer (optional)',
+                    customOfferPlaceholder: 'Special offer or promotion...',
+                    generate: 'Generate Message',
+                    preview: 'Message Preview',
+                    copy: 'Copy',
+                    saveTemplate: 'Save as Template',
+                    copied: 'Message copied to clipboard',
+                    selectLeadFirst: 'Please select a lead first'
+                },
+                messageTypes: {
+                    firstContact: 'First Contact',
+                    followup: 'Follow-up',
+                    reengagement: 'Re-engagement',
+                    proposal: 'Proposal',
+                    birthday: 'Birthday'
+                },
+                templates: {
+                    createTemplate: 'Create Template',
+                    templateName: 'Template Name',
+                    messageType: 'Message Type',
+                    messageContent: 'Message Content',
+                    placeholders: 'Use placeholders: {name}, {company}, {niche}, {subniche}, {seller_name}, {seller_company}',
+                    noTemplates: 'No templates yet',
+                    createFirst: 'Create your first message template',
+                    useTemplate: 'Use',
+                    deleteTemplate: 'Delete',
+                    templateSaved: 'Template saved successfully',
+                    templateDeleted: 'Template deleted successfully'
+                },
+                profile: {
+                    title: 'My Profile',
+                    subtitle: 'This information will be used to personalize your messages automatically.',
+                    name: 'Your Name',
+                    namePlaceholder: 'Enter your name',
+                    company: 'Company',
+                    companyPlaceholder: 'Enter your company name',
+                    phone: 'Phone',
+                    phonePlaceholder: 'Enter your phone number',
+                    email: 'Email',
+                    emailPlaceholder: 'Enter your email',
+                    niche: 'Your Niche',
+                    subniche: 'Your Subniche',
+                    selectNiche: 'Select your niche',
+                    selectSubniche: 'Select your subniche',
+                    saveProfile: 'Save Profile',
+                    profileSaved: 'Profile saved successfully'
+                },
+                settings: {
+                    preferences: 'Preferences',
+                    language: 'Language',
+                    theme: 'Theme',
+                    light: 'Light',
+                    dark: 'Dark',
+                    dangerZone: 'Danger Zone',
+                    clearData: 'Clear All Data',
+                    dataCleared: 'All data has been cleared',
+                    confirmClear: 'Are you sure you want to delete all data? This action cannot be undone.'
+                },
+                common: {
+                    cancel: 'Cancel',
+                    save: 'Save',
+                    confirm: 'Confirm',
+                    delete: 'Delete',
+                    confirmDelete: 'Are you sure you want to delete this item?',
+                    success: 'Success',
+                    error: 'Error',
+                    warning: 'Warning'
+                }
+            },
+            pt: {
+                menu: {
+                    main: 'Principal',
+                    dashboard: 'Painel',
+                    leads: 'Leads',
+                    clients: 'Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    tools: 'Ferramentas',
+                    messageGenerator: 'Gerador de Mensagens',
+                    templates: 'Modelos',
+                    myProfile: 'Meu Perfil',
+                    settings: 'Configuracoes'
+                },
+                dashboard: {
+                    totalLeads: 'Total de Leads',
+                    totalClients: 'Total de Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    pendingFollowups: 'Follow-ups Pendentes',
+                    recentLeads: 'Leads Recentes',
+                    todayReminders: 'Lembretes de Hoje',
+                    followUpToday: 'Follow-up para hoje',
+                    followUpOverdue: 'Follow-up atrasado',
+                    birthdayToday: 'Aniversario hoje',
+                    noReminders: 'Nenhum lembrete para hoje',
+                    noLeads: 'Nenhum lead ainda'
+                },
+                leads: {
+                    addLead: 'Adicionar Lead',
+                    editLead: 'Editar Lead',
+                    name: 'Nome',
+                    company: 'Empresa',
+                    phone: 'Telefone',
+                    email: 'Email',
+                    city: 'Cidade',
+                    status: 'Status',
+                    niche: 'Nicho',
+                    subniche: 'Subnicho',
+                    followUp: 'Follow-up',
+                    followUpDate: 'Data de Follow-up',
+                    birthday: 'Aniversario',
+                    notes: 'Notas',
+                    actions: 'Acoes',
+                    edit: 'Editar',
+                    delete: 'Excluir',
+                    searchPlaceholder: 'Buscar por nome, empresa ou telefone...',
+                    allStatus: 'Todos os Status',
+                    allNiches: 'Todos os Nichos',
+                    allSubniches: 'Todos os Subnichos',
+                    selectNiche: 'Selecionar Nicho',
+                    selectSubniche: 'Selecionar Subnicho',
+                    noLeads: 'Nenhum lead encontrado',
+                    addFirstLead: 'Adicione seu primeiro lead para comecar',
+                    leadSaved: 'Lead salvo com sucesso',
+                    leadDeleted: 'Lead excluido com sucesso'
+                },
+                status: {
+                    new: 'Novo',
+                    contacted: 'Contatado',
+                    followup: 'Follow-up',
+                    interested: 'Interessado',
+                    client: 'Cliente',
+                    lost: 'Perdido'
+                },
+                clients: {
+                    title: 'Clientes',
+                    noClients: 'Nenhum cliente ainda',
+                    convertLeads: 'Converta leads em clientes para ve-los aqui'
+                },
+                lost: {
+                    title: 'Leads Perdidos',
+                    noLost: 'Nenhum lead perdido',
+                    markAsLost: 'Leads marcados como perdidos aparecerao aqui'
+                },
+                message: {
+                    selectLead: 'Selecionar Lead',
+                    chooseLead: 'Escolha um lead para gerar mensagem',
+                    messageType: 'Tipo de Mensagem',
+                    customData: 'Oferta Personalizada (opcional)',
+                    customOfferPlaceholder: 'Oferta especial ou promocao...',
+                    generate: 'Gerar Mensagem',
+                    preview: 'Pre-visualizacao',
+                    copy: 'Copiar',
+                    saveTemplate: 'Salvar como Modelo',
+                    copied: 'Mensagem copiada para area de transferencia',
+                    selectLeadFirst: 'Por favor, selecione um lead primeiro'
+                },
+                messageTypes: {
+                    firstContact: 'Primeiro Contato',
+                    followup: 'Follow-up',
+                    reengagement: 'Reengajamento',
+                    proposal: 'Proposta',
+                    birthday: 'Aniversario'
+                },
+                templates: {
+                    createTemplate: 'Criar Modelo',
+                    templateName: 'Nome do Modelo',
+                    messageType: 'Tipo de Mensagem',
+                    messageContent: 'Conteudo da Mensagem',
+                    placeholders: 'Use marcadores: {name}, {company}, {niche}, {subniche}, {seller_name}, {seller_company}',
+                    noTemplates: 'Nenhum modelo ainda',
+                    createFirst: 'Crie seu primeiro modelo de mensagem',
+                    useTemplate: 'Usar',
+                    deleteTemplate: 'Excluir',
+                    templateSaved: 'Modelo salvo com sucesso',
+                    templateDeleted: 'Modelo excluido com sucesso'
+                },
+                profile: {
+                    title: 'Meu Perfil',
+                    subtitle: 'Essas informacoes serao usadas para personalizar suas mensagens automaticamente.',
+                    name: 'Seu Nome',
+                    namePlaceholder: 'Digite seu nome',
+                    company: 'Empresa',
+                    companyPlaceholder: 'Digite o nome da empresa',
+                    phone: 'Telefone',
+                    phonePlaceholder: 'Digite seu telefone',
+                    email: 'Email',
+                    emailPlaceholder: 'Digite seu email',
+                    niche: 'Seu Nicho',
+                    subniche: 'Seu Subnicho',
+                    selectNiche: 'Selecione seu nicho',
+                    selectSubniche: 'Selecione seu subnicho',
+                    saveProfile: 'Salvar Perfil',
+                    profileSaved: 'Perfil salvo com sucesso'
+                },
+                settings: {
+                    preferences: 'Preferencias',
+                    language: 'Idioma',
+                    theme: 'Tema',
+                    light: 'Claro',
+                    dark: 'Escuro',
+                    dangerZone: 'Zona de Perigo',
+                    clearData: 'Limpar Todos os Dados',
+                    dataCleared: 'Todos os dados foram limpos',
+                    confirmClear: 'Tem certeza que deseja excluir todos os dados? Esta acao nao pode ser desfeita.'
+                },
+                common: {
+                    cancel: 'Cancelar',
+                    save: 'Salvar',
+                    confirm: 'Confirmar',
+                    delete: 'Excluir',
+                    confirmDelete: 'Tem certeza que deseja excluir este item?',
+                    success: 'Sucesso',
+                    error: 'Erro',
+                    warning: 'Aviso'
+                }
+            },
+            es: {
+                menu: {
+                    main: 'Principal',
+                    dashboard: 'Panel',
+                    leads: 'Leads',
+                    clients: 'Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    tools: 'Herramientas',
+                    messageGenerator: 'Generador de Mensajes',
+                    templates: 'Plantillas',
+                    myProfile: 'Mi Perfil',
+                    settings: 'Configuracion'
+                },
+                dashboard: {
+                    totalLeads: 'Total de Leads',
+                    totalClients: 'Total de Clientes',
+                    lostLeads: 'Leads Perdidos',
+                    pendingFollowups: 'Seguimientos Pendientes',
+                    recentLeads: 'Leads Recientes',
+                    todayReminders: 'Recordatorios de Hoy',
+                    followUpToday: 'Seguimiento para hoy',
+                    followUpOverdue: 'Seguimiento atrasado',
+                    birthdayToday: 'Cumpleanos hoy',
+                    noReminders: 'No hay recordatorios para hoy',
+                    noLeads: 'Ningun lead aun'
+                },
+                leads: {
+                    addLead: 'Agregar Lead',
+                    editLead: 'Editar Lead',
+                    name: 'Nombre',
+                    company: 'Empresa',
+                    phone: 'Telefono',
+                    email: 'Email',
+                    city: 'Ciudad',
+                    status: 'Estado',
+                    niche: 'Nicho',
+                    subniche: 'Subnicho',
+                    followUp: 'Seguimiento',
+                    followUpDate: 'Fecha de Seguimiento',
+                    birthday: 'Cumpleanos',
+                    notes: 'Notas',
+                    actions: 'Acciones',
+                    edit: 'Editar',
+                    delete: 'Eliminar',
+                    searchPlaceholder: 'Buscar por nombre, empresa o telefono...',
+                    allStatus: 'Todos los Estados',
+                    allNiches: 'Todos los Nichos',
+                    allSubniches: 'Todos los Subnichos',
+                    selectNiche: 'Seleccionar Nicho',
+                    selectSubniche: 'Seleccionar Subnicho',
+                    noLeads: 'Ningun lead encontrado',
+                    addFirstLead: 'Agrega tu primer lead para comenzar',
+                    leadSaved: 'Lead guardado exitosamente',
+                    leadDeleted: 'Lead eliminado exitosamente'
+                },
+                status: {
+                    new: 'Nuevo',
+                    contacted: 'Contactado',
+                    followup: 'Seguimiento',
+                    interested: 'Interesado',
+                    client: 'Cliente',
+                    lost: 'Perdido'
+                },
+                clients: {
+                    title: 'Clientes',
+                    noClients: 'Aun no hay clientes',
+                    convertLeads: 'Convierte leads en clientes para verlos aqui'
+                },
+                lost: {
+                    title: 'Leads Perdidos',
+                    noLost: 'Ningun lead perdido',
+                    markAsLost: 'Los leads marcados como perdidos apareceran aqui'
+                },
+                message: {
+                    selectLead: 'Seleccionar Lead',
+                    chooseLead: 'Elige un lead para generar mensaje',
+                    messageType: 'Tipo de Mensaje',
+                    customData: 'Oferta Personalizada (opcional)',
+                    customOfferPlaceholder: 'Oferta especial o promocion...',
+                    generate: 'Generar Mensaje',
+                    preview: 'Vista Previa',
+                    copy: 'Copiar',
+                    saveTemplate: 'Guardar como Plantilla',
+                    copied: 'Mensaje copiado al portapapeles',
+                    selectLeadFirst: 'Por favor, selecciona un lead primero'
+                },
+                messageTypes: {
+                    firstContact: 'Primer Contacto',
+                    followup: 'Seguimiento',
+                    reengagement: 'Recompromiso',
+                    proposal: 'Propuesta',
+                    birthday: 'Cumpleanos'
+                },
+                templates: {
+                    createTemplate: 'Crear Plantilla',
+                    templateName: 'Nombre de Plantilla',
+                    messageType: 'Tipo de Mensaje',
+                    messageContent: 'Contenido del Mensaje',
+                    placeholders: 'Usa marcadores: {name}, {company}, {niche}, {subniche}, {seller_name}, {seller_company}',
+                    noTemplates: 'Aun no hay plantillas',
+                    createFirst: 'Crea tu primera plantilla de mensaje',
+                    useTemplate: 'Usar',
+                    deleteTemplate: 'Eliminar',
+                    templateSaved: 'Plantilla guardada exitosamente',
+                    templateDeleted: 'Plantilla eliminada exitosamente'
+                },
+                profile: {
+                    title: 'Mi Perfil',
+                    subtitle: 'Esta informacion se utilizara para personalizar tus mensajes automaticamente.',
+                    name: 'Tu Nombre',
+                    namePlaceholder: 'Ingresa tu nombre',
+                    company: 'Empresa',
+                    companyPlaceholder: 'Ingresa el nombre de tu empresa',
+                    phone: 'Telefono',
+                    phonePlaceholder: 'Ingresa tu telefono',
+                    email: 'Email',
+                    emailPlaceholder: 'Ingresa tu email',
+                    niche: 'Tu Nicho',
+                    subniche: 'Tu Subnicho',
+                    selectNiche: 'Selecciona tu nicho',
+                    selectSubniche: 'Selecciona tu subnicho',
+                    saveProfile: 'Guardar Perfil',
+                    profileSaved: 'Perfil guardado exitosamente'
+                },
+                settings: {
+                    preferences: 'Preferencias',
+                    language: 'Idioma',
+                    theme: 'Tema',
+                    light: 'Claro',
+                    dark: 'Oscuro',
+                    dangerZone: 'Zona de Peligro',
+                    clearData: 'Limpiar Todos los Datos',
+                    dataCleared: 'Todos los datos han sido eliminados',
+                    confirmClear: 'Estas seguro de que quieres eliminar todos los datos? Esta accion no se puede deshacer.'
+                },
+                common: {
+                    cancel: 'Cancelar',
+                    save: 'Guardar',
+                    confirm: 'Confirmar',
+                    delete: 'Eliminar',
+                    confirmDelete: 'Estas seguro de que quieres eliminar este elemento?',
+                    success: 'Exito',
+                    error: 'Error',
+                    warning: 'Advertencia'
+                }
+            }
+        };
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            applyTheme();
+            applyLanguage();
+            populateNicheDropdowns();
+            loadProfile();
+            updateDashboard();
+            renderLeads();
+            populateMessageLeads();
+            renderTemplates();
+            setupNavigation();
+        }
+
+        // ==================== NAVIGATION ====================
+        function setupNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const section = item.dataset.section;
+                    navigateTo(section);
+                });
+            });
+        }
+
+        function navigateTo(section) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-section="${section}"]`).classList.add('active');
+
+            document.querySelectorAll('.content-area > section').forEach(sec => sec.style.display = 'none');
+            document.getElementById(`${section}Section`).style.display = 'block';
+
+            const pageTitle = document.querySelector(`[data-section="${section}"] span`).textContent;
+            document.getElementById('pageTitle').textContent = pageTitle;
+
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('mobileOverlay').classList.toggle('active');
+        }
+
+        // ==================== THEME ====================
+        function applyTheme() {
+            if (settings.theme === 'dark') {
+                document.body.classList.add('dark');
+            } else {
+                document.body.classList.remove('dark');
+            }
+            updateThemeIcon();
+        }
+
+        function toggleTheme() {
+            settings.theme = settings.theme === 'light' ? 'dark' : 'light';
+            saveSettings();
+            applyTheme();
+        }
+
+        function setTheme(theme) {
+            settings.theme = theme;
+            saveSettings();
+            applyTheme();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (settings.theme === 'dark') {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+            } else {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+            }
+        }
+
+        // ==================== LANGUAGE ====================
+        function applyLanguage() {
+            const lang = settings.language;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                const translation = getTranslation(key, lang);
+                if (translation) {
+                    el.textContent = translation;
+                }
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.dataset.i18nPlaceholder;
+                const translation = getTranslation(key, lang);
+                if (translation) {
+                    el.placeholder = translation;
+                }
+            });
+            document.getElementById('langSelect').value = lang;
+            if (document.getElementById('settingsLang')) {
+                document.getElementById('settingsLang').value = lang;
+            }
+            populateNicheDropdowns();
+        }
+
+        function getTranslation(key, lang) {
+            const keys = key.split('.');
+            let obj = translations[lang];
+            for (const k of keys) {
+                if (obj && obj[k]) {
+                    obj = obj[k];
+                } else {
+                    return null;
+                }
+            }
+            return obj;
+        }
+
+        function changeLanguage(lang) {
+            settings.language = lang;
+            saveSettings();
+            applyLanguage();
+            renderLeads();
+            populateMessageLeads();
+        }
+
+        // ==================== SETTINGS ====================
+        function saveSettings() {
+            localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
+        }
+
+        function populateNicheDropdowns() {
+            const lang = settings.language;
+            
+            // Filter niche dropdown
+            const filterNicheSelect = document.getElementById('filterNiche');
+            const currentFilterNiche = filterNicheSelect.value;
+            filterNicheSelect.innerHTML = `<option value="">${getTranslation('leads.allNiches', lang) || 'All Niches'}</option>`;
+            Object.keys(nicheData).forEach(nicheKey => {
+                const nicheName = nicheData[nicheKey].name[lang] || nicheData[nicheKey].name.en;
+                filterNicheSelect.innerHTML += `<option value="${nicheKey}">${nicheName}</option>`;
+            });
+            filterNicheSelect.value = currentFilterNiche;
+            
+            // Lead form niche dropdown
+            const leadNicheSelect = document.getElementById('leadNiche');
+            const currentLeadNiche = leadNicheSelect.value;
+            leadNicheSelect.innerHTML = `<option value="">${getTranslation('leads.selectNiche', lang) || 'Select Niche'}</option>`;
+            Object.keys(nicheData).forEach(nicheKey => {
+                const nicheName = nicheData[nicheKey].name[lang] || nicheData[nicheKey].name.en;
+                leadNicheSelect.innerHTML += `<option value="${nicheKey}">${nicheName}</option>`;
+            });
+            leadNicheSelect.value = currentLeadNiche;
+            
+            // Profile niche dropdown
+            const profileNicheSelect = document.getElementById('profileNiche');
+            const currentProfileNiche = profileNicheSelect.value;
+            profileNicheSelect.innerHTML = `<option value="">${getTranslation('profile.selectNiche', lang) || 'Select your niche'}</option>`;
+            Object.keys(nicheData).forEach(nicheKey => {
+                const nicheName = nicheData[nicheKey].name[lang] || nicheData[nicheKey].name.en;
+                profileNicheSelect.innerHTML += `<option value="${nicheKey}">${nicheName}</option>`;
+            });
+            profileNicheSelect.value = currentProfileNiche;
+            
+            updateFilterSubniches();
+            updateLeadSubniches();
+            updateProfileSubniches();
+        }
+
+        function updateFilterSubniches() {
+            const lang = settings.language;
+            const niche = document.getElementById('filterNiche').value;
+            const subnicheSelect = document.getElementById('filterSubniche');
+            const currentValue = subnicheSelect.value;
+            
+            subnicheSelect.innerHTML = `<option value="">${getTranslation('leads.allSubniches', lang) || 'All Subniches'}</option>`;
+            
+            if (niche && nicheData[niche]) {
+                Object.keys(nicheData[niche].subniches).forEach(subnicheKey => {
+                    const subnicheName = nicheData[niche].subniches[subnicheKey][lang] || nicheData[niche].subniches[subnicheKey].en;
+                    subnicheSelect.innerHTML += `<option value="${subnicheKey}">${subnicheName}</option>`;
+                });
+            }
+            
+            subnicheSelect.value = currentValue;
+        }
+
+        function updateLeadSubniches() {
+            const lang = settings.language;
+            const niche = document.getElementById('leadNiche').value;
+            const subnicheSelect = document.getElementById('leadSubniche');
+            const currentValue = subnicheSelect.value;
+            
+            subnicheSelect.innerHTML = `<option value="">${getTranslation('leads.selectSubniche', lang) || 'Select Subniche'}</option>`;
+            
+            if (niche && nicheData[niche]) {
+                Object.keys(nicheData[niche].subniches).forEach(subnicheKey => {
+                    const subnicheName = nicheData[niche].subniches[subnicheKey][lang] || nicheData[niche].subniches[subnicheKey].en;
+                    subnicheSelect.innerHTML += `<option value="${subnicheKey}">${subnicheName}</option>`;
+                });
+            }
+        }
+
+        function updateProfileSubniches() {
+            const lang = settings.language;
+            const niche = document.getElementById('profileNiche').value;
+            const subnicheSelect = document.getElementById('profileSubniche');
+            const currentValue = subnicheSelect.value;
+            
+            subnicheSelect.innerHTML = `<option value="">${getTranslation('profile.selectSubniche', lang) || 'Select your subniche'}</option>`;
+            
+            if (niche && nicheData[niche]) {
+                Object.keys(nicheData[niche].subniches).forEach(subnicheKey => {
+                    const subnicheName = nicheData[niche].subniches[subnicheKey][lang] || nicheData[niche].subniches[subnicheKey].en;
+                    subnicheSelect.innerHTML += `<option value="${subnicheKey}">${subnicheName}</option>`;
+                });
+            }
+        }
+
+        // ==================== PROFILE ====================
+        function loadProfile() {
+            document.getElementById('profileName').value = profile.name || '';
+            document.getElementById('profileCompany').value = profile.company || '';
+            document.getElementById('profilePhone').value = profile.phone || '';
+            document.getElementById('profileEmail').value = profile.email || '';
+            document.getElementById('profileNiche').value = profile.niche || '';
+            updateProfileSubniches();
+            setTimeout(() => {
+                document.getElementById('profileSubniche').value = profile.subniche || '';
+            }, 100);
+        }
+
+        function saveProfile() {
+            profile = {
+                name: document.getElementById('profileName').value,
+                company: document.getElementById('profileCompany').value,
+                phone: document.getElementById('profilePhone').value,
+                email: document.getElementById('profileEmail').value,
+                niche: document.getElementById('profileNiche').value,
+                subniche: document.getElementById('profileSubniche').value
+            };
+            localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile));
+            showToast(getTranslation('profile.profileSaved', settings.language) || 'Profile saved successfully', 'success');
+        }
+
+        function clearAllData() {
+            showConfirmModal(
+                getTranslation('settings.confirmClear', settings.language) || 'Are you sure you want to delete all data? This action cannot be undone.',
+                () => {
+                    localStorage.removeItem(STORAGE_KEYS.leads);
+                    localStorage.removeItem(STORAGE_KEYS.templates);
+                    localStorage.removeItem(STORAGE_KEYS.profile);
+                    leads = [];
+                    templates = [];
+                    profile = { name: '', company: '', phone: '', email: '', niche: '', subniche: '' };
+                    updateDashboard();
+                    renderLeads();
+                    renderTemplates();
+                    populateMessageLeads();
+                    loadProfile();
+                    showToast(getTranslation('settings.dataCleared', settings.language) || 'All data has been cleared', 'success');
+                }
+            );
+        }
+
+        // ==================== LEADS CRUD ====================
+        function openLeadModal(id = null) {
+            const modal = document.getElementById('leadModal');
+            const title = document.getElementById('leadModalTitle');
+            
+            if (id) {
+                const lead = leads.find(l => l.id === id);
+                if (lead) {
+                    title.textContent = getTranslation('leads.editLead', settings.language) || 'Edit Lead';
+                    document.getElementById('leadId').value = lead.id;
+                    document.getElementById('leadName').value = lead.name || '';
+                    document.getElementById('leadCompany').value = lead.company || '';
+                    document.getElementById('leadPhone').value = lead.phone || '';
+                    document.getElementById('leadEmail').value = lead.email || '';
+                    document.getElementById('leadCity').value = lead.city || '';
+                    document.getElementById('leadStatus').value = lead.status || 'new';
+                    document.getElementById('leadNiche').value = lead.niche || '';
+                    updateLeadSubniches();
+                    setTimeout(() => {
+                        document.getElementById('leadSubniche').value = lead.subniche || '';
+                    }, 100);
+                    document.getElementById('leadFollowUp').value = lead.followUp || '';
+                    document.getElementById('leadBirthday').value = lead.birthday || '';
+                    document.getElementById('leadNotes').value = lead.notes || '';
+                }
+            } else {
+                title.textContent = getTranslation('leads.addLead', settings.language) || 'Add Lead';
+                document.getElementById('leadForm').reset();
+                document.getElementById('leadId').value = '';
+                document.getElementById('leadStatus').value = 'new';
+                updateLeadSubniches();
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeLeadModal() {
+            document.getElementById('leadModal').classList.remove('active');
+        }
+
+        function saveLead() {
+            const id = document.getElementById('leadId').value;
+            const leadData = {
+                id: id || Date.now().toString(),
+                name: document.getElementById('leadName').value,
+                company: document.getElementById('leadCompany').value,
+                phone: document.getElementById('leadPhone').value,
+                email: document.getElementById('leadEmail').value,
+                city: document.getElementById('leadCity').value,
+                status: document.getElementById('leadStatus').value,
+                niche: document.getElementById('leadNiche').value,
+                subniche: document.getElementById('leadSubniche').value,
+                followUp: document.getElementById('leadFollowUp').value,
+                birthday: document.getElementById('leadBirthday').value,
+                notes: document.getElementById('leadNotes').value,
+                createdAt: id ? leads.find(l => l.id === id)?.createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            if (id) {
+                const index = leads.findIndex(l => l.id === id);
+                leads[index] = leadData;
+            } else {
+                leads.push(leadData);
+            }
+
+            localStorage.setItem(STORAGE_KEYS.leads, JSON.stringify(leads));
+            closeLeadModal();
+            renderLeads();
+            updateDashboard();
+            populateMessageLeads();
+            showToast(getTranslation('leads.leadSaved', settings.language) || 'Lead saved successfully', 'success');
+        }
+
+        function updateLeadStatus(id, newStatus) {
+            const lead = leads.find(l => l.id === id);
+            if (lead) {
+                lead.status = newStatus;
+                lead.updatedAt = new Date().toISOString();
+                localStorage.setItem(STORAGE_KEYS.leads, JSON.stringify(leads));
+                renderLeads();
+                updateDashboard();
+            }
+        }
+
+        function deleteLead(id) {
+            showConfirmModal(
+                getTranslation('common.confirmDelete', settings.language) || 'Are you sure you want to delete this item?',
+                () => {
+                    leads = leads.filter(l => l.id !== id);
+                    localStorage.setItem(STORAGE_KEYS.leads, JSON.stringify(leads));
+                    renderLeads();
+                    updateDashboard();
+                    populateMessageLeads();
+                    showToast(getTranslation('leads.leadDeleted', settings.language) || 'Lead deleted successfully', 'success');
+                }
+            );
+        }
+
+        function filterLeads() {
+            renderLeads();
+        }
+
+        function getNicheName(nicheKey, lang) {
+            if (!nicheKey || !nicheData[nicheKey]) return '';
+            return nicheData[nicheKey].name[lang] || nicheData[nicheKey].name.en;
+        }
+
+        function getSubnicheName(nicheKey, subnicheKey, lang) {
+            if (!nicheKey || !subnicheKey || !nicheData[nicheKey]) return '';
+            return nicheData[nicheKey].subniches[subnicheKey]?.[lang] || nicheData[nicheKey].subniches[subnicheKey]?.en || '';
+        }
+
+        function renderLeads() {
+            const lang = settings.language;
+            const search = document.getElementById('searchLeads')?.value?.toLowerCase() || '';
+            const statusFilter = document.getElementById('filterStatus')?.value || '';
+            const nicheFilter = document.getElementById('filterNiche')?.value || '';
+            const subnicheFilter = document.getElementById('filterSubniche')?.value || '';
+            
+            let filtered = leads.filter(lead => {
+                const matchesSearch = !search || 
+                    lead.name?.toLowerCase().includes(search) ||
+                    lead.company?.toLowerCase().includes(search) ||
+                    lead.phone?.includes(search) ||
+                    lead.email?.toLowerCase().includes(search);
+                const matchesStatus = !statusFilter || lead.status === statusFilter;
+                const matchesNiche = !nicheFilter || lead.niche === nicheFilter;
+                const matchesSubniche = !subnicheFilter || lead.subniche === subnicheFilter;
+                return matchesSearch && matchesStatus && matchesNiche && matchesSubniche;
+            });
+
+            const tbody = document.getElementById('leadsTableBody');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </div>
+                                <div class="empty-title">${getTranslation('leads.noLeads', lang) || 'No leads found'}</div>
+                                <div class="empty-text">${getTranslation('leads.addFirstLead', lang) || 'Add your first lead to get started'}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(lead => {
+                const today = new Date().toISOString().split('T')[0];
+                const isOverdue = lead.followUp && lead.followUp < today;
+                const isToday = lead.followUp === today;
+                const isBirthday = lead.birthday && isBirthdayToday(lead.birthday);
+                
+                let alertBadge = '';
+                if (isOverdue && lead.status !== 'client' && lead.status !== 'lost') {
+                    alertBadge = `<span class="status-badge status-followup" style="margin-left: 8px; font-size: 10px;">!</span>`;
+                } else if (isToday && lead.status !== 'client' && lead.status !== 'lost') {
+                    alertBadge = `<span class="status-badge status-interested" style="margin-left: 8px; font-size: 10px;">Today</span>`;
+                }
+                if (isBirthday) {
+                    alertBadge += `<span class="status-badge" style="margin-left: 4px; background: rgba(236, 72, 153, 0.15); color: #ec4899; font-size: 10px;">Birthday</span>`;
+                }
+
+                const nicheName = getNicheName(lead.niche, lang);
+                const subnicheName = getSubnicheName(lead.niche, lead.subniche, lang);
+                const nicheDisplay = nicheName + (subnicheName ? ` / ${subnicheName}` : '');
+
+                return `
+                    <tr>
+                        <td>
+                            <strong>${lead.name || '-'}</strong>
+                            ${alertBadge}
+                        </td>
+                        <td>${lead.company || '-'}</td>
+                        <td>${lead.phone || '-'}</td>
+                        <td><span class="niche-tag">${nicheDisplay || '-'}</span></td>
+                        <td>
+                            <select class="status-dropdown ${lead.status}" onchange="updateLeadStatus('${lead.id}', this.value)">
+                                <option value="new" ${lead.status === 'new' ? 'selected' : ''}>${getTranslation('status.new', lang)}</option>
+                                <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>${getTranslation('status.contacted', lang)}</option>
+                                <option value="followup" ${lead.status === 'followup' ? 'selected' : ''}>${getTranslation('status.followup', lang)}</option>
+                                <option value="interested" ${lead.status === 'interested' ? 'selected' : ''}>${getTranslation('status.interested', lang)}</option>
+                                <option value="client" ${lead.status === 'client' ? 'selected' : ''}>${getTranslation('status.client', lang)}</option>
+                                <option value="lost" ${lead.status === 'lost' ? 'selected' : ''}>${getTranslation('status.lost', lang)}</option>
+                            </select>
+                        </td>
+                        <td>${lead.followUp ? formatDate(lead.followUp) : '-'}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-icon btn-sm" onclick="openLeadModal('${lead.id}')" title="${getTranslation('leads.edit', lang)}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-icon btn-sm btn-danger" onclick="deleteLead('${lead.id}')" title="${getTranslation('leads.delete', lang)}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            renderClients();
+            renderLost();
+        }
+
+        function renderClients() {
+            const lang = settings.language;
+            const clients = leads.filter(l => l.status === 'client');
+            const tbody = document.getElementById('clientsTableBody');
+            
+            if (clients.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <polyline points="16 11 18 13 22 9"/>
+                                    </svg>
+                                </div>
+                                <div class="empty-title">${getTranslation('clients.noClients', lang)}</div>
+                                <div class="empty-text">${getTranslation('clients.convertLeads', lang)}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = clients.map(lead => {
+                const nicheName = getNicheName(lead.niche, lang);
+                const subnicheName = getSubnicheName(lead.niche, lead.subniche, lang);
+                return `
+                    <tr>
+                        <td><strong>${lead.name || '-'}</strong></td>
+                        <td>${lead.company || '-'}</td>
+                        <td>${lead.phone || '-'}</td>
+                        <td>${lead.email || '-'}</td>
+                        <td>${nicheName || '-'}${subnicheName ? ` / ${subnicheName}` : ''}</td>
+                        <td>
+                            <button class="btn btn-icon btn-sm" onclick="openLeadModal('${lead.id}')" title="${getTranslation('leads.edit', lang)}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderLost() {
+            const lang = settings.language;
+            const lostLeads = leads.filter(l => l.status === 'lost');
+            const tbody = document.getElementById('lostTableBody');
+            
+            if (lostLeads.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="15" y1="9" x2="9" y2="15"/>
+                                        <line x1="9" y1="9" x2="15" y2="15"/>
+                                    </svg>
+                                </div>
+                                <div class="empty-title">${getTranslation('lost.noLost', lang)}</div>
+                                <div class="empty-text">${getTranslation('lost.markAsLost', lang)}</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = lostLeads.map(lead => `
+                <tr>
+                    <td><strong>${lead.name || '-'}</strong></td>
+                    <td>${lead.company || '-'}</td>
+                    <td>${lead.phone || '-'}</td>
+                    <td>${lead.notes || '-'}</td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-icon btn-sm" onclick="openLeadModal('${lead.id}')" title="${getTranslation('leads.edit', lang)}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-icon btn-sm btn-danger" onclick="deleteLead('${lead.id}')" title="${getTranslation('leads.delete', lang)}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==================== DASHBOARD ====================
+        function updateDashboard() {
+            const lang = settings.language;
+            
+            const activeLeads = leads.filter(l => l.status !== 'client' && l.status !== 'lost');
+            document.getElementById('totalLeads').textContent = activeLeads.length;
+            document.getElementById('totalClients').textContent = leads.filter(l => l.status === 'client').length;
+            document.getElementById('totalLost').textContent = leads.filter(l => l.status === 'lost').length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const pendingFollowups = leads.filter(l => 
+                l.followUp && 
+                l.followUp <= today && 
+                l.status !== 'client' && 
+                l.status !== 'lost'
+            ).length;
+            document.getElementById('pendingFollowups').textContent = pendingFollowups;
+
+            // Recent leads
+            const recentLeads = [...leads].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+            const recentLeadsList = document.getElementById('recentLeadsList');
+            
+            if (recentLeads.length === 0) {
+                recentLeadsList.innerHTML = `<p style="color: var(--text-muted);">${getTranslation('dashboard.noLeads', lang)}</p>`;
+            } else {
+                recentLeadsList.innerHTML = recentLeads.map(lead => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <strong>${lead.name || 'Unknown'}</strong>
+                            <div style="font-size: 13px; color: var(--text-secondary);">${lead.company || '-'}</div>
+                        </div>
+                        <span class="status-badge status-${lead.status}">${getTranslation(`status.${lead.status}`, lang)}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Today's reminders
+            const reminders = [];
+            leads.forEach(lead => {
+                if (lead.followUp === today && lead.status !== 'client' && lead.status !== 'lost') {
+                    reminders.push({
+                        type: 'followup',
+                        text: `${lead.name} - ${getTranslation('dashboard.followUpToday', lang)}`,
+                        color: 'warning'
+                    });
+                }
+                if (lead.followUp && lead.followUp < today && lead.status !== 'client' && lead.status !== 'lost') {
+                    reminders.push({
+                        type: 'overdue',
+                        text: `${lead.name} - ${getTranslation('dashboard.followUpOverdue', lang)}`,
+                        color: 'danger'
+                    });
+                }
+                if (lead.birthday && isBirthdayToday(lead.birthday)) {
+                    reminders.push({
+                        type: 'birthday',
+                        text: `${lead.name} - ${getTranslation('dashboard.birthdayToday', lang)}!`,
+                        color: 'info'
+                    });
+                }
+            });
+
+            const todayReminders = document.getElementById('todayReminders');
+            if (reminders.length === 0) {
+                todayReminders.innerHTML = `<p style="color: var(--text-muted);">${getTranslation('dashboard.noReminders', lang)}</p>`;
+            } else {
+                todayReminders.innerHTML = reminders.map(r => `
+                    <div class="alert alert-${r.color}" style="margin-bottom: 8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            ${r.type === 'birthday' 
+                                ? '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'
+                                : r.type === 'overdue'
+                                ? '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
+                                : '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'
+                            }
+                        </svg>
+                        <span>${r.text}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Dashboard alerts
+            const alertsContainer = document.getElementById('alertsContainer');
+            const allAlerts = [];
+            
+            leads.forEach(lead => {
+                if (lead.followUp === today && lead.status !== 'client' && lead.status !== 'lost') {
+                    allAlerts.push(`<div class="alert alert-warning"><strong>${lead.name}</strong> - ${getTranslation('dashboard.followUpToday', lang)}</div>`);
+                }
+                if (lead.birthday && isBirthdayToday(lead.birthday)) {
+                    allAlerts.push(`<div class="alert alert-info"><strong>${lead.name}</strong> - ${getTranslation('dashboard.birthdayToday', lang)}!</div>`);
+                }
+            });
+
+            alertsContainer.innerHTML = allAlerts.slice(0, 3).join('');
+        }
+
+        // ==================== MESSAGE GENERATOR ====================
+        function populateMessageLeads() {
+            const lang = settings.language;
+            const select = document.getElementById('messageLeadSelect');
+            select.innerHTML = `<option value="">-- ${getTranslation('message.selectLead', lang) || 'Select Lead'} --</option>` +
+                leads.map(lead => `<option value="${lead.id}">${lead.name} ${lead.company ? `(${lead.company})` : ''}</option>`).join('');
+        }
+
+        function selectLeadForMessage() {
+            generateMessage();
+        }
+
+        function generateMessage() {
+            const lang = settings.language;
+            const leadId = document.getElementById('messageLeadSelect').value;
+            const messageType = document.getElementById('messageType').value;
+            const customOffer = document.getElementById('customOffer').value;
+            
+            if (!leadId) {
+                document.getElementById('messagePreview').textContent = getTranslation('message.selectLeadFirst', lang) || 'Please select a lead first';
+                return;
+            }
+
+            const lead = leads.find(l => l.id === leadId);
+            if (!lead) return;
+
+            const message = buildAdvancedMessage(lead, profile, messageType, customOffer, lang);
+            document.getElementById('messagePreview').textContent = message;
+        }
+
+        function buildAdvancedMessage(lead, seller, type, customOffer, lang) {
+            const leadName = lead.name || '';
+            const leadCompany = lead.company || '';
+            const leadNiche = lead.niche || '';
+            const leadSubniche = lead.subniche || '';
+            const sellerName = seller.name || '';
+            const sellerCompany = seller.company || '';
+            const sellerNiche = seller.niche || '';
+            const sellerSubniche = seller.subniche || '';
+            
+            const leadNicheName = getNicheName(leadNiche, lang);
+            const leadSubnicheName = getSubnicheName(leadNiche, leadSubniche, lang);
+            const sellerNicheName = getNicheName(sellerNiche, lang);
+            const sellerSubnicheName = getSubnicheName(sellerNiche, sellerSubniche, lang);
+            
+            let greeting, body, closing;
+
+            // Determine relationship context
+            const sameNiche = leadNiche && sellerNiche && leadNiche === sellerNiche;
+            const isServiceSeller = ['technology', 'marketing', 'finance', 'education'].includes(sellerNiche);
+            const isHealthSeller = sellerNiche === 'health';
+            const isFitnessSeller = sellerNiche === 'fitness';
+            const isBeautySeller = sellerNiche === 'beauty';
+
+            switch (type) {
+                case 'first_contact':
+                    if (leadName) {
+                        greeting = lang === 'pt' ? `Olá, ${leadName}!` : lang === 'es' ? `Hola, ${leadName}!` : `Hi ${leadName}!`;
+                    } else {
+                        greeting = lang === 'pt' ? 'Olá, tudo bem?' : lang === 'es' ? 'Hola, todo bien?' : 'Hello, how are you?';
+                    }
+                    
+                    if (sameNiche) {
+                        // Peer-to-peer message
+                        body = lang === 'pt' 
+                            ? `Vejo que você também atua no setor de ${leadNicheName || 'nossa área'}. Como profissional do mesmo segmento, gostaria de trocar experiências e explorar possibilidades de parceria.`
+                            : lang === 'es'
+                            ? `Veo que también trabajas en el sector de ${leadNicheName || 'nuestra área'}. Como profesional del mismo segmento, me gustaría intercambiar experiencias y explorar posibilidades de colaboración.`
+                            : `I see you also work in the ${leadNicheName || 'our industry'} sector. As a fellow professional in the same field, I'd like to exchange experiences and explore partnership opportunities.`;
+                    } else if (isServiceSeller) {
+                        // Service provider message
+                        const serviceContext = sellerSubnicheName || sellerNicheName || 'business';
+                        body = lang === 'pt'
+                            ? `Notei que você atua ${leadCompany ? `na ${leadCompany}` : `no setor de ${leadNicheName || 'sua área'}`}. Como especialista em ${serviceContext}, trabalho com profissionais como você para ${getServiceBenefit(sellerSubniche, lang)}.`
+                            : lang === 'es'
+                            ? `Noté que trabajas ${leadCompany ? `en ${leadCompany}` : `en el sector de ${leadNicheName || 'tu área'}`}. Como especialista en ${serviceContext}, trabajo con profesionales como tú para ${getServiceBenefit(sellerSubniche, lang)}.`
+                            : `I noticed you work ${leadCompany ? `at ${leadCompany}` : `in the ${leadNicheName || 'your industry'} sector`}. As a ${serviceContext} specialist, I work with professionals like you to ${getServiceBenefit(sellerSubniche, lang)}.`;
+                    } else if (isHealthSeller || isFitnessSeller || isBeautySeller) {
+                        // Health/Fitness/Beauty professional message
+                        body = lang === 'pt'
+                            ? `Tenho acompanhado o trabalho de ${leadCompany || `sua ${leadSubnicheName || 'empresa'}`} e acredito que posso agregar valor ao que você já oferece.`
+                            : lang === 'es'
+                            ? `He estado siguiendo el trabajo de ${leadCompany || `tu ${leadSubnicheName || 'empresa'}`} y creo que puedo agregar valor a lo que ya ofreces.`
+                            : `I've been following the work of ${leadCompany || `your ${leadSubnicheName || 'business'}`} and believe I can add value to what you already offer.`;
+                    } else {
+                        // Generic first contact
+                        body = lang === 'pt'
+                            ? `${leadCompany ? `Conheço o trabalho da ${leadCompany}` : `Vi seu perfil`} e gostaria de apresentar uma oportunidade que pode ser interessante para você.`
+                            : lang === 'es'
+                            ? `${leadCompany ? `Conozco el trabajo de ${leadCompany}` : `Vi tu perfil`} y me gustaría presentarte una oportunidad que podría interesarte.`
+                            : `${leadCompany ? `I know the work of ${leadCompany}` : `I saw your profile`} and would like to present an opportunity that might interest you.`;
+                    }
+                    
+                    if (sellerName) {
+                        closing = lang === 'pt'
+                            ? `Me chamo ${sellerName}${sellerCompany ? `, da ${sellerCompany}` : ''}.${customOffer ? `\n\n${customOffer}` : ''}\n\nPodemos conversar?`
+                            : lang === 'es'
+                            ? `Me llamo ${sellerName}${sellerCompany ? `, de ${sellerCompany}` : ''}.${customOffer ? `\n\n${customOffer}` : ''}\n\n¿Podemos conversar?`
+                            : `My name is ${sellerName}${sellerCompany ? `, from ${sellerCompany}` : ''}.${customOffer ? `\n\n${customOffer}` : ''}\n\nCan we talk?`;
+                    } else {
+                        closing = customOffer || (lang === 'pt' ? 'Podemos conversar?' : lang === 'es' ? '¿Podemos conversar?' : 'Can we talk?');
+                    }
+                    break;
+
+                case 'followup':
+                    greeting = leadName 
+                        ? (lang === 'pt' ? `Olá, ${leadName}!` : lang === 'es' ? `Hola, ${leadName}!` : `Hi ${leadName}!`)
+                        : (lang === 'pt' ? 'Olá!' : lang === 'es' ? 'Hola!' : 'Hi!');
+                    
+                    body = lang === 'pt'
+                        ? `Passando para dar continuidade à nossa conversa${leadCompany ? ` sobre ${leadNicheName ? `o segmento de ${leadNicheName}` : 'seu negócio'} na ${leadCompany}` : ''}. Como está?`
+                        : lang === 'es'
+                        ? `Pasando para dar continuidad a nuestra conversación${leadCompany ? ` sobre ${leadNicheName ? `el sector de ${leadNicheName}` : 'tu negocio'} en ${leadCompany}` : ''}. ¿Cómo estás?`
+                        : `Following up on our conversation${leadCompany ? ` about ${leadNicheName ? `the ${leadNicheName} sector` : 'your business'} at ${leadCompany}` : ''}. How are you?`;
+                    
+                    closing = sellerName 
+                        ? `${sellerName}${customOffer ? `\n\n${customOffer}` : ''}`
+                        : (customOffer || '');
+                    break;
+
+                case 'reengagement':
+                    greeting = leadName 
+                        ? (lang === 'pt' ? `Oi ${leadName}, tudo bem?` : lang === 'es' ? `Hola ${leadName}, todo bien?` : `Hi ${leadName}, how are you?`)
+                        : (lang === 'pt' ? 'Oi, tudo bem?' : lang === 'es' ? 'Hola, todo bien?' : 'Hi, how are you?');
+                    
+                    body = lang === 'pt'
+                        ? 'Faz um tempo que não conversamos e gostaria de retomar o contato. Tenho novidades que podem interessar você.'
+                        : lang === 'es'
+                        ? 'Hace tiempo que no conversamos y me gustaría retomar el contacto. Tengo novedades que pueden interesarte.'
+                        : "It's been a while since we talked and I'd like to reconnect. I have updates that might interest you.";
+                    
+                    closing = lang === 'pt'
+                        ? `${leadCompany ? `Como estão as coisas na ${leadCompany}?` : 'Como estão as coisas?'}${customOffer ? `\n\n${customOffer}` : ''}${sellerName ? `\n\n${sellerName}` : ''}`
+                        : lang === 'es'
+                        ? `${leadCompany ? `¿Cómo están las cosas en ${leadCompany}?` : '¿Cómo están las cosas?'}${customOffer ? `\n\n${customOffer}` : ''}${sellerName ? `\n\n${sellerName}` : ''}`
+                        : `${leadCompany ? `How are things at ${leadCompany}?` : 'How are things?'}${customOffer ? `\n\n${customOffer}` : ''}${sellerName ? `\n\n${sellerName}` : ''}`;
+                    break;
+
+                case 'proposal':
+                    greeting = leadName 
+                        ? (lang === 'pt' ? `${leadName},` : lang === 'es' ? `${leadName},` : `${leadName},`)
+                        : (lang === 'pt' ? 'Prezado(a),' : lang === 'es' ? 'Estimado/a,' : 'Dear Sir/Madam,');
+                    
+                    body = lang === 'pt'
+                        ? `Conforme nossa conversa${leadCompany ? ` sobre o trabalho da ${leadCompany}` : ''}, segue a proposta${leadNicheName ? ` para o segmento de ${leadNicheName}` : ''}.`
+                        : lang === 'es'
+                        ? `Según nuestra conversación${leadCompany ? ` sobre el trabajo de ${leadCompany}` : ''}, sigue la propuesta${leadNicheName ? ` para el sector de ${leadNicheName}` : ''}.`
+                        : `As discussed${leadCompany ? ` about ${leadCompany}'s work` : ''}, please find the proposal${leadNicheName ? ` for the ${leadNicheName} sector` : ''}.`;
+                    
+                    closing = lang === 'pt'
+                        ? `Fico à disposição.${sellerName ? `\n\n${sellerName}${sellerCompany ? `\n${sellerCompany}` : ''}` : ''}${customOffer ? `\n\n${customOffer}` : ''}`
+                        : lang === 'es'
+                        ? `Quedo a disposición.${sellerName ? `\n\n${sellerName}${sellerCompany ? `\n${sellerCompany}` : ''}` : ''}${customOffer ? `\n\n${customOffer}` : ''}`
+                        : `I'm available for any questions.${sellerName ? `\n\n${sellerName}${sellerCompany ? `\n${sellerCompany}` : ''}` : ''}${customOffer ? `\n\n${customOffer}` : ''}`;
+                    break;
+
+                case 'birthday':
+                    greeting = leadName 
+                        ? (lang === 'pt' ? `${leadName}!` : lang === 'es' ? `¡${leadName}!` : `${leadName}!`)
+                        : (lang === 'pt' ? 'Parabéns!' : lang === 'es' ? '¡Felicitaciones!' : 'Congratulations!');
+                    
+                    body = lang === 'pt'
+                        ? 'Feliz aniversário! Desejo um dia muito especial e um ano repleto de conquistas.'
+                        : lang === 'es'
+                        ? '¡Feliz cumpleaños! Te deseo un día muy especial y un año lleno de logros.'
+                        : 'Happy birthday! Wishing you a very special day and a year full of achievements.';
+                    
+                    closing = lang === 'pt'
+                        ? `${leadCompany ? `Que a ${leadCompany} continue crescendo muito!` : 'Muita saúde, sucesso e felicidade!'}${sellerName ? `\n\n${sellerName}${sellerCompany ? ` | ${sellerCompany}` : ''}` : ''}`
+                        : lang === 'es'
+                        ? `${leadCompany ? `¡Que ${leadCompany} siga creciendo mucho!` : '¡Mucha salud, éxito y felicidad!'}${sellerName ? `\n\n${sellerName}${sellerCompany ? ` | ${sellerCompany}` : ''}` : ''}`
+                        : `${leadCompany ? `May ${leadCompany} continue to grow!` : 'Much health, success, and happiness!'}${sellerName ? `\n\n${sellerName}${sellerCompany ? ` | ${sellerCompany}` : ''}` : ''}`;
+                    break;
+
+                default:
+                    greeting = 'Hello!';
+                    body = 'Message content';
+                    closing = 'Best regards.';
+            }
+
+            return `${greeting}\n\n${body}\n\n${closing}`;
+        }
+
+        function getServiceBenefit(subniche, lang) {
+            const benefits = {
+                software_company: {
+                    en: 'streamline operations and increase efficiency',
+                    pt: 'otimizar operações e aumentar a eficiência',
+                    es: 'agilizar operaciones y aumentar la eficiencia'
+                },
+                it_support: {
+                    en: 'keep systems running smoothly',
+                    pt: 'manter os sistemas funcionando sem problemas',
+                    es: 'mantener los sistemas funcionando sin problemas'
+                },
+                digital_agency: {
+                    en: 'increase visibility and attract more customers',
+                    pt: 'aumentar a visibilidade e atrair mais clientes',
+                    es: 'aumentar la visibilidad y atraer más clientes'
+                },
+                accountant: {
+                    en: 'optimize finances and reduce tax burden',
+                    pt: 'otimizar finanças e reduzir a carga tributária',
+                    es: 'optimizar finanzas y reducir la carga tributaria'
+                },
+                financial_advisor: {
+                    en: 'make smarter investment decisions',
+                    pt: 'tomar decisões de investimento mais inteligentes',
+                    es: 'tomar decisiones de inversión más inteligentes'
+                },
+                insurance_broker: {
+                    en: 'protect what matters most',
+                    pt: 'proteger o que mais importa',
+                    es: 'proteger lo que más importa'
+                },
+                online_course: {
+                    en: 'create and sell courses successfully',
+                    pt: 'criar e vender cursos com sucesso',
+                    es: 'crear y vender cursos con éxito'
+                },
+                language_school: {
+                    en: 'expand through language education',
+                    pt: 'expandir através do ensino de idiomas',
+                    es: 'expandir a través de la enseñanza de idiomas'
+                }
+            };
+            
+            return benefits[subniche]?.[lang] || benefits[subniche]?.en || 'grow your business';
+        }
+
+        function copyMessage() {
+            const message = document.getElementById('messagePreview').textContent;
+            navigator.clipboard.writeText(message).then(() => {
+                showToast(getTranslation('message.copied', settings.language) || 'Message copied to clipboard', 'success');
+            });
+        }
+
+        function saveMessageAsTemplate() {
+            const content = document.getElementById('messagePreview').textContent;
+            document.getElementById('templateContent').value = content;
+            navigateTo('templates');
+            openTemplateModal();
+        }
+
+        // ==================== TEMPLATES ====================
+        function openTemplateModal() {
+            document.getElementById('templateForm').reset();
+            document.getElementById('templateId').value = '';
+            document.getElementById('templateModalTitle').textContent = getTranslation('templates.createTemplate', settings.language) || 'Create Template';
+            document.getElementById('templateModal').classList.add('active');
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('templateModal').classList.remove('active');
+        }
+
+        function saveTemplate() {
+            const id = document.getElementById('templateId').value;
+            const templateData = {
+                id: id || Date.now().toString(),
+                name: document.getElementById('templateName').value,
+                type: document.getElementById('templateType').value,
+                content: document.getElementById('templateContent').value,
+                createdAt: id ? templates.find(t => t.id === id)?.createdAt : new Date().toISOString()
+            };
+
+            if (id) {
+                const index = templates.findIndex(t => t.id === id);
+                templates[index] = templateData;
+            } else {
+                templates.push(templateData);
+            }
+
+            localStorage.setItem(STORAGE_KEYS.templates, JSON.stringify(templates));
+            closeTemplateModal();
+            renderTemplates();
+            showToast(getTranslation('templates.templateSaved', settings.language) || 'Template saved successfully', 'success');
+        }
+
+        function deleteTemplate(id) {
+            showConfirmModal(
+                getTranslation('common.confirmDelete', settings.language) || 'Are you sure you want to delete this item?',
+                () => {
+                    templates = templates.filter(t => t.id !== id);
+                    localStorage.setItem(STORAGE_KEYS.templates, JSON.stringify(templates));
+                    renderTemplates();
+                    showToast(getTranslation('templates.templateDeleted', settings.language) || 'Template deleted successfully', 'success');
+                }
+            );
+        }
+
+        function useTemplate(id) {
+            const template = templates.find(t => t.id === id);
+            if (template) {
+                const leadId = document.getElementById('messageLeadSelect').value;
+                const lead = leads.find(l => l.id === leadId);
+                
+                let content = template.content;
+                if (lead) {
+                    content = content.replace(/{name}/g, lead.name || '');
+                    content = content.replace(/{company}/g, lead.company || '');
+                    content = content.replace(/{niche}/g, getNicheName(lead.niche, settings.language) || '');
+                    content = content.replace(/{subniche}/g, getSubnicheName(lead.niche, lead.subniche, settings.language) || '');
+                }
+                content = content.replace(/{seller_name}/g, profile.name || '');
+                content = content.replace(/{seller_company}/g, profile.company || '');
+                
+                document.getElementById('messagePreview').textContent = content;
+                navigateTo('messages');
+            }
+        }
+
+        function renderTemplates() {
+            const lang = settings.language;
+            const container = document.getElementById('templatesList');
+            
+            if (templates.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="3" y1="9" x2="21" y2="9"/>
+                                <line x1="9" y1="21" x2="9" y2="9"/>
+                            </svg>
+                        </div>
+                        <div class="empty-title">${getTranslation('templates.noTemplates', lang)}</div>
+                        <div class="empty-text">${getTranslation('templates.createFirst', lang)}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = templates.map(template => `
+                <div style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom:
+
